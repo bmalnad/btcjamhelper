@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BTCjam Helper - Options</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap-theme.min.css">
+    <script src="jquery-2.1.1.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <style type="text/css">
+    
+    html {
+      position: relative;
+      min-height: 100%;
+    }
+    body {
+      /* Margin bottom by footer height */
+      margin-bottom: 30px;
+    }
+    .footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background-color: #f5f5f5;
+    }
+
+    .container {
+      width: 100%;
+    }
+
+    h3 {
+      margin-top: 10px;
+      color: #337ab7;
+    }
+
+    body > .container {
+      padding: 0px 0px 0;
+      padding-left: 15px;
+    }
+    .container .text-muted {
+      margin: 10px 0;
+      padding-left: 15px;
+    }
+
+    .footer > .container {
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+
+    .row {
+      margin-bottom: 6px;
+    }
+
+    #popupbody {
+      width: 800px;
+      height: 400px;
+      padding-top: 0px;
+    }
+
+    #headerrow {
+      border-bottom: 1px solid #e7e7e7;
+      margin-bottom: 8px;
+    }
+    #statusrow {
+      color: #ff0000;
+      font-weight: bold;
+      padding-top: 4px;
+      padding-bottom: 4px;
+    }
+    </style>
+  </head>
+  <body id="popupbody">
+    
+    <div class="container">
+      <h3>BTCjam Helper</h3>
+
+      <p id="status" class="bg-success"></p>
+
+      <div class="row">
+        <div class="col-sm-4 text-right">
+          Show BTC Price From:
+        </div>
+        <div class="col-sm-3">
+          <select id="exchange" class="form-control">
+           <option value="bitstamp">Bitstamp</option>
+           <option value="btc-e">BTC-e</option>
+           <option value="coinbase">Coinbase</option>
+           <option value="coindesk">CoinDesk</option>
+          </select>
+        </div>
+      </div>
+
+<!--       <div class="row">
+        <div class="col-sm-4 text-right">
+          Remove low interest rate warnings:
+        </div>
+        <div class="col-sm-8">
+          <input name="removewarnings" id="removewarnings" type="checkbox" value="true">
+        </div>
+      </div>
+ -->
+
+
+      <div class="row">
+        <div class="col-sm-4 text-right">
+            Replace Payments Calendar:
+        </div>
+        <div class="col-sm-3">
+          <input name="fixpaymentscreen" id="fixpaymentscreen" type="checkbox" value="true">
+        </div>
+      </div>
+
+
+
+      <div class="row">
+        <div class="col-sm-4 text-right">
+            Fix "Rate User" Screen:
+        </div>
+        <div class="col-sm-3">
+          <input name="fixrateuserscreen" id="fixrateuserscreen" type="checkbox" value="true">
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-sm-12">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-4"></div>
+        <div class="col-sm-3">
+          <button id="save" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="row">
+          <p class="text-muted"><small>If you like using BTCjam Helper, please consider donating: <a class="donate" href="bitcoin:1CQBSCqmZJNi3EABVs4TBcCHbi3Jd9E7fG?amount=1000000">1CQBSCqmZJNi3EABVs4TBcCHbi3Jd9E7fG</a></small></p>
+        </div>
+      </div>
+    </footer>
+    <div>
+      
+    </div>
+    <script src="options.js"></script>
+  </body>
+</html>
