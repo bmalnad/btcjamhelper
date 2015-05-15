@@ -21,24 +21,24 @@
 //     });
 // });
 
-chrome.runtime.onMessage.addListener(
-   function(request, sender, sendResponse)
-   {
-      if (request.Action === "GetToken")
-      {
-         chrome.identity.getAuthToken({'interactive': true}, function(token)
-         {
-            console.log("token:"+token);
-            sendResponse({Result: token});
-         });
-   }
-});
+// chrome.runtime.onMessage.addListener(
+//    function(request, sender, sendResponse)
+//    {
+//       if (request.Action === "GetToken")
+//       {
+//          chrome.identity.getAuthToken({'interactive': true}, function(token)
+//          {
+//             console.log("token:"+token);
+//             sendResponse({Result: token});
+//          });
+//    }
+// });
 
-chrome.browserAction.onClicked.addListener(function(tab) {
+// chrome.browserAction.onClicked.addListener(function(tab) {
 
-console.log("bg");
+// console.log("bg");
 
-	chrome.identity.launchWebAuthFlow(
-		{'url': 'https://btcjam.com/oauth/authorize', 'interactive': true},
-  		function(redirect_url) { console.log(url) });
-});
+// 	chrome.identity.launchWebAuthFlow(
+// 		{'url': 'https://btcjam.com/oauth/authorize', 'interactive': true},
+//   		function(redirect_url) { console.log(url) });
+// });

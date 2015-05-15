@@ -57,17 +57,23 @@
       width: 800px;
       height: 400px;
       padding-top: 0px;
+      font-size: 13px;
+      color: #000000;
     }
 
     #headerrow {
       border-bottom: 1px solid #e7e7e7;
       margin-bottom: 8px;
     }
-    #statusrow {
-      color: #ff0000;
+    #status {
+      display: none;
       font-weight: bold;
       padding-top: 4px;
       padding-bottom: 4px;
+    }
+
+    .col-sm-4 {
+      padding-right: 0px;
     }
     </style>
   </head>
@@ -79,11 +85,11 @@
       <p id="status" class="bg-success"></p>
 
       <div class="row">
-        <div class="col-sm-4 text-right">
+        <div class="col-sm-5 text-right">
           Show BTC Price From:
         </div>
         <div class="col-sm-3">
-          <select id="exchange" class="form-control">
+          <select id="exchange" class="form-control input-sm">
            <option value="bitstamp">Bitstamp</option>
            <option value="btc-e">BTC-e</option>
            <option value="coinbase">Coinbase</option>
@@ -93,7 +99,7 @@
       </div>
 
 <!--       <div class="row">
-        <div class="col-sm-4 text-right">
+        <div class="col-sm-5 text-right">
           Remove low interest rate warnings:
         </div>
         <div class="col-sm-8">
@@ -104,7 +110,7 @@
 
 
       <div class="row">
-        <div class="col-sm-4 text-right">
+        <div class="col-sm-5 text-right">
             Replace Payments Calendar:
         </div>
         <div class="col-sm-3">
@@ -112,10 +118,8 @@
         </div>
       </div>
 
-
-
       <div class="row">
-        <div class="col-sm-4 text-right">
+        <div class="col-sm-5 text-right">
             Fix "Rate User" Screen:
         </div>
         <div class="col-sm-3">
@@ -123,6 +127,30 @@
         </div>
       </div>
 
+      <div class="row">
+        <div class="col-sm-5 text-right">
+            Fix "Followers" Screen:
+        </div>
+        <div class="col-sm-3">
+          <input name="fixfollwersscreen" id="fixfollowersscreen" type="checkbox" value="true">
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-sm-5 text-right">
+            Interval to Check on watched users: 
+        </div>
+        <div class="col-sm-3">
+          <select id="watchinterval" class="form-control input-sm">
+           <option value="10000000">Never</option>
+           <option value="10">10 Minutes</option>
+           <option value="15">15 Minutes</option>
+           <option value="20">20 Minutes</option>
+           <option value="30">30 Minutes</option>
+           <option value="60">60 Minutes</option>
+          </select>
+        </div>
+      </div>
 
       <div class="row">
         <div class="col-sm-12">
@@ -130,9 +158,9 @@
       </div>
 
       <div class="row">
-        <div class="col-sm-4"></div>
+        <div class="col-sm-5"></div>
         <div class="col-sm-3">
-          <button id="save" class="btn btn-primary">Save</button>
+          <button id="save" class="btn btn-xs btn-primary">Save</button>
         </div>
       </div>
     </div>
@@ -140,7 +168,7 @@
     <footer class="footer">
       <div class="container">
         <div class="row">
-          <p class="text-muted"><small>If you like using BTCjam Helper, please consider donating: <a class="donate" href="bitcoin:1CQBSCqmZJNi3EABVs4TBcCHbi3Jd9E7fG?amount=1000000">1CQBSCqmZJNi3EABVs4TBcCHbi3Jd9E7fG</a></small></p>
+          <p class="text-muted">If you like using BTCjam Helper, please consider donating: <a class="donate" href="bitcoin:1CQBSCqmZJNi3EABVs4TBcCHbi3Jd9E7fG?amount=1000000">1CQBSCqmZJNi3EABVs4TBcCHbi3Jd9E7fG</a></p>
         </div>
       </div>
     </footer>
