@@ -1,9 +1,10 @@
 chrome.runtime.onInstalled.addListener(function(details){
     if(details.reason == "install"){
         console.log("This is a first install!");
+        var thisVersion = chrome.runtime.getManifest().version;
         chrome.storage.local.set({
         exchange: 'coinbase',
-        watchinterval: 1000000,
+        watchinterval: 10000000,
         fixrateuserscreen: true,
         fixpaymentscreen: true,
         fixfollowersscreen: true
@@ -16,7 +17,7 @@ chrome.runtime.onInstalled.addListener(function(details){
         var thisVersion = chrome.runtime.getManifest().version;
         chrome.storage.local.set({
         exchange: 'coinbase',
-        watchinterval: 1000000,
+        watchinterval: 10000000,
         fixrateuserscreen: true,
         fixpaymentscreen: true,
         fixfollowersscreen: true

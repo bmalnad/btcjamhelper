@@ -22,11 +22,17 @@ var user = null;
 loadUserInfo();
 
 function loadUserInfo(){
-	var userid = $.cookie("ajs_user_id").replace(/[^0-9]+/g, '');
-	$.getJSON("https://btcjam.com/users/" + userid, function(obj){
-		user = obj;
+	try{
+		var userid = $.cookie("ajs_user_id").replace(/[^0-9]+/g, '');
+		$.getJSON("https://btcjam.com/users/" + userid, function(obj){
+			user = obj;
+			btchelper_init();
+		});		
+	}
+	catch(exception){
+		console.log("BTCjam Helper Error: " + exception);
 		btchelper_init();
-	});
+	}
 }
 
 function btchelper_init(){
@@ -166,16 +172,15 @@ function enhancePaymentsScreen(){
 	if($(location).attr('href').indexOf('/my_account/payments') > 0){
 
 		var makePaymentsPretty = function(){
+			begForMoney();
+
 			$("#payments_calendar").css("display","none");
 			$("#body > div:nth-child(6)").css("display","none");
 			$("#body > div:nth-child(8)").css("display","none")
 			$("#my_payments-table").css("display", "none");
 
 			$("#body > div:nth-child(4) > div.col-md-9").append("<ul class='nav nav-tabs'> <li id='helper_payables_tab' role='presentation' class='helper_tab'><a class='helper_tab_a' href='#'>Payables</a></li> <li id='helper_overdue_tab' role='presentation' class='active helper_tab'><a class='helper_tab_a' href='#'>Overdue Receivables</a></li>  <li id='helper_pending_tab' class='helper_tab' role='presentation'><a class='helper_tab_a' href='#'>Pending Receivables</a></li>  <li id='helper_defaulted_tab' class='helper_tab' role='presentation'><a class='helper_tab_a' href='#'>Defaulted Receivables</a></li></ul><div id='helper_payments' class='row' style='background-color: #ffffff; padding: 4px;'></div>");
-			//<a href='#' id='helper_toggle_overdue' style='color: #ffffff;font-weight: bold!important; font-size: 14px;'>Overdue Receivables</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-			//<a href='#' id='helper_toggle_pending' style='color: #000000;font-weight: bold!important; font-size: 14px;'>Pending Receivables</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-			//<a href='#' id='helper_toggle_defaulted' style='color: #000000;font-weight: bold!important; font-size: 14px;'>Defaulted Receivables</a> &nbsp;&nbsp;&nbsp;
-			$("#helper_payments").append("<table id='helper_payables_table' class='table table-striped table-bordered tablesorter'><thead id='helper_payables_table_head'><tr><th colspan='5' style=' padding: 8px; font-weight: bold; font-size: 14px; background-color: #0068c0; color: #ffffff'> <a href='#' class='btn btn-default' id='helper_payables_7'>Next 7 Days</a> <a href='#' class='btn btn-default' id='helper_payables_15'>Next 15 Days</a> <a href='#' class='btn btn-default' id='helper_payables_30'>Next 30 Days</a> <a href='#' class='btn btn-default' id='helper_payables_60'>Next 60 Days</a> <a href='#' class='btn btn-default' id='helper_payables_all'>All</a><a style='float: right;' download='btcjam_payables.xls' class='btn btn-default' id='helper_export_payables'>Export to Excel</a></th></tr><tr id='helper_payables_table_header_2nd_row'><th width='10%'>Due Date</th><th>Loan</th><th>Payment #</th><th width='10%'>Amount</th><th width='10%'>Paid</th></tr></thead></thead><tbody id='helper_payables_table_body'><tr><td colspan=5>Loading payables...</td></tr></tbody></table><table id='helper_overdue_payments_table' class='table table-striped table-bordered tablesorter'><thead id='helper_overdue_payments_table_head'><tr><th colspan='5' style=' padding: 8px; font-weight: bold; font-size: 14px; background-color: #DC143C; color: #ffffff'><a href='#' class='btn btn-default' id='helper_overdue_7'> < 7 Days</a> <a href='#' class='btn btn-default' id='helper_overdue_15'> < 15 Days</a> <a href='#' class='btn btn-default' id='helper_overdue_30'> < 30 Days</a> <a class='btn btn-default' id='helper_overdue_60'> < 60 Days</a>  <a class='btn btn-default' id='helper_overdue_all'>All</a>  <a style='float: right;' download='btcjam_overdue_payments.xls' class='btn btn-default' id='helper_export_overdue'>Export to Excel</a> </th></tr><tr id='helper_overdue_payments_table_header_2nd_row'><th width='10%'>Due Date</th><th width='10%'>Borrower</th><th>Loan</th><th width='10%'>Payment #</th><th>Amount</th></tr></thead><tbody id='helper_overdue_payments_table_body'><tr><td colspan=5>Loading overdue receivables...</td></tr></tbody></table><table id='helper_pending_payments_table' class='table table-striped table-bordered tablesorter'><thead><tr><th colspan='5' style=' padding: 8px; font-weight: bold; font-size: 14px; background-color: #008000; color: #000000'><a class='btn btn-default' id='helper_pending_7'>Next 7 Days</a>  <a class='btn btn-default' id='helper_pending_15'>Next 15 Days</a>  <a class='btn btn-default' id='helper_pending_30'>Next 30 Days</a> <a class='btn btn-default' id='helper_pending_60'>Next 60 Days</a> <a class='btn btn-default' id='helper_pending_all'>All</a> <a style='float: right;' download='btcjam_pending_payments.xls' class='btn btn-default' id='helper_export_pending'>Export to Excel</a> </th></tr><tr id='helper_pending_payments_table_header_2nd_row'><th width='10%'>Due Date</th><th width='10%'>Borrower</th><th>Loan</th><th width='10%'>Payment #</th><th>Amount</th></tr></thead><tbody id='helper_pending_payments_table_body'><tr><td colspan=5>Loading pending receivables...</td></tr></tbody></table><table id='helper_defaulted_payments_table' class='table table-striped table-bordered tablesorter'><thead><tr><th colspan='5' style=' padding: 8px; font-weight: bold; font-size: 14px; background-color: #778899; color: #000000'> <a class='btn btn-default' id='helper_defaulted_all'>All</a> <a style='float: right;' download='btcjam_defaulted_payments.xls' class='btn btn-default' id='helper_export_defaulted'>Export to Excel</a></th></tr><tr id='helper_defaulted_payments_table_header_2nd_row'><th width='10%'>Loan Date</th><th width='10%'>Borrower</th><th width='60%'>Loan <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></th><th width='10%'>Invested</th><th width='10%'>Remaining</th></tr></thead><tbody id='helper_defaulted_payments_table_body'><tr><td colspan=5>Loading defaulted receivables...</td></tr></tbody></table>");
+			$("#helper_payments").append("<table id='helper_payables_table' class='table table-striped table-bordered tablesorter'><thead id='helper_payables_table_head'><tr><th colspan='5' style=' padding: 8px; font-weight: bold; font-size: 14px; background-color: #0068c0; color: #ffffff'> <a href='#' class='btn btn-default' id='helper_payables_7'>Next 7 Days</a> <a href='#' class='btn btn-default' id='helper_payables_15'>Next 15 Days</a> <a href='#' class='btn btn-default' id='helper_payables_30'>Next 30 Days</a> <a href='#' class='btn btn-default' id='helper_payables_60'>Next 60 Days</a> <a href='#' class='btn btn-default' id='helper_payables_all'>All</a><a style='float: right;' download='btcjam_payables.xls' class='btn btn-default' id='helper_export_payables'>Export to Excel</a></th></tr><tr id='helper_payables_table_header_2nd_row'><th width='10%'>Due Date</th><th>Loan</th><th>Payment #</th><th width='10%'>Amount</th><th width='10%'>Paid</th></tr></thead></thead><tbody id='helper_payables_table_body'><tr><td colspan=5>Loading payables...</td></tr></tbody></table><table id='helper_overdue_payments_table' class='table table-striped table-bordered tablesorter'><thead id='helper_overdue_payments_table_head'><tr><th colspan='5' style=' padding: 8px; font-weight: bold; font-size: 14px; background-color: #DC143C; color: #ffffff'><a href='#' class='btn btn-default' id='helper_overdue_7'> < 7 Days</a> <a href='#' class='btn btn-default' id='helper_overdue_15'> < 15 Days</a> <a href='#' class='btn btn-default' id='helper_overdue_30'> < 30 Days</a> <a class='btn btn-default' id='helper_overdue_60'> < 60 Days</a>  <a class='btn btn-default' id='helper_overdue_all'>All</a>  <a style='float: right;' download='btcjam_overdue_payments.xls' class='btn btn-default' id='helper_export_overdue'>Export to Excel</a> </th></tr><tr id='helper_overdue_payments_table_header_2nd_row'><th width='10%'>Due Date</th><th width='10%'>Borrower</th><th>Loan</th><th width='10%'>Payment #</th><th>Amount</th></tr></thead><tbody id='helper_overdue_payments_table_body'><tr><td colspan=5>Loading overdue receivables...</td></tr></tbody></table><table id='helper_pending_payments_table' class='table table-striped table-bordered tablesorter'><thead><tr><th colspan='5' style=' padding: 8px; font-weight: bold; font-size: 14px; background-color: #008000; color: #000000'> <a class='btn btn-default' id='helper_pending_7'>Next 7 Days</a>  <a class='btn btn-default' id='helper_pending_15'>Next 15 Days</a>  <a class='btn btn-default' id='helper_pending_30'>Next 30 Days</a> <a class='btn btn-default' id='helper_pending_60'>Next 60 Days</a> <a class='btn btn-default' id='helper_pending_all'>All</a> <a style='float: right;' download='btcjam_pending_payments.xls' class='btn btn-default' id='helper_export_pending'>Export to Excel</a> </th></tr><tr id='helper_pending_payments_table_header_2nd_row'><th width='10%'>Due Date</th><th width='10%'>Borrower</th><th>Loan</th><th width='10%'>Payment #</th><th>Amount</th></tr></thead><tbody id='helper_pending_payments_table_body'><tr><td colspan=5>Loading pending receivables...</td></tr></tbody></table><table id='helper_defaulted_payments_table' class='table table-striped table-bordered tablesorter'><thead><tr><th colspan='5' style=' padding: 8px; font-weight: bold; font-size: 14px; background-color: #778899; color: #000000'> <a class='btn btn-default' id='helper_defaulted_all'>All</a> <a style='float: right;' download='btcjam_defaulted_payments.xls' class='btn btn-default' id='helper_export_defaulted'>Export to Excel</a></th></tr><tr id='helper_defaulted_payments_table_header_2nd_row'><th width='10%'>Loan Date</th><th width='10%'>Borrower</th><th width='60%'>Loan <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></th><th width='10%'>Invested</th><th width='10%'>Remaining</th></tr></thead><tbody id='helper_defaulted_payments_table_body'><tr><td colspan=5>Loading defaulted receivables...</td></tr></tbody></table>");
 
 			$("#helper_payables_table").css('display','none');
 			$("#helper_overdue_payments_table").css('display','table');
@@ -314,6 +319,12 @@ function enhancePaymentsScreen(){
 			// $("#helper_toggle_pending").click(function(){
 			// 	$("#helper_pending_payments_table").toggle();
 			// 	$("#helper_pending_payments_table_header_2nd_row").toggle();
+			// });
+			// $('#helper_pending_1').addClass('helper_payments_button btn-sm').click(function(event){
+			// 	event.preventDefault();
+			// 	event.stopPropagation();
+			// 	populatePayments("pending", 1);
+			// 	togglePaymentButtons(this);
 			// });
 			$('#helper_pending_7').addClass('helper_payments_button btn-sm').click(function(event){
 				event.preventDefault();
@@ -463,11 +474,20 @@ function enhancePaymentsScreen(){
 
 	   		if(update_default){
 				chrome.storage.local.get({stored_investment_data: 'empty'}, function(data) {
+					var default_totalinvested = 0.00000000;
+					var default_totalremaining = 0.00000000;
 					$(data.stored_investment_data).each(function(count, investment){
 						if(investment.payment_state.indexOf('efaulted') >= 0){
 							imgstring = "<img class='media-object avatar-notes' src='"+investment.user_avatar+"'>";
-							$("#helper_defaulted_payments_table_body").append("<tr><td>"+investment.closing_date.substring(0,10)+"</td><td><a href='https://btcjam.com/users/"+investment.user_id+"'>"+investment.user_name+"</a>"+imgstring+"</td><td><a target='_blank' href='https://btcjam.com/listings/"+investment.id+"'>"+investment.title+"</a></td><td>"+parseFloat(investment.amount).toFixed(8)+"</td><td>"+parseFloat(investment.amount_left).toFixed(8)+"</td></tr>");						}
+							$("#helper_defaulted_payments_table_body").append("<tr><td>"+investment.closing_date.substring(0,10)+"</td><td><a href='https://btcjam.com/users/"+investment.user_id+"'>"+investment.user_name+"</a>"+imgstring+"</td><td><a target='_blank' href='https://btcjam.com/listings/"+investment.id+"'>"+investment.title+"</a></td><td>฿"+parseFloat(investment.amount).toFixed(8)+"</td><td>฿"+parseFloat(investment.amount_left).toFixed(8)+"</td></tr>");
+							default_totalinvested += parseFloat(investment.amount);
+							default_totalremaining += parseFloat(investment.amount_left);
+						}
 				 	});
+				 	if(default_totalinvested > 0){
+						$("#helper_defaulted_payments_table_body").prepend("<tr><td colspan='3'><div class='helper_table_total_label'>Total:</div></td><td><div class='helper_table_total'>฿"+parseFloat(default_totalinvested).toFixed(8)+"</div></td><td><div class='helper_table_total'>฿"+parseFloat(default_totalremaining).toFixed(8)+"</div></td></tr>");
+						$("#helper_defaulted_payments_table_body").append("<tr><td colspan='3'><div class='helper_table_total_label'>Total:</div></td><td><div class='helper_table_total'>฿"+parseFloat(default_totalinvested).toFixed(8)+"</div></td><td><div class='helper_table_total'>฿"+parseFloat(default_totalremaining).toFixed(8)+"</div></td></tr>");
+				 	}
 				});
 	   		}
 
@@ -494,18 +514,31 @@ function enhancePaymentsScreen(){
 					var today = Date.today();
 					var overduemaxdate = Date.today().addDays(howmanydays * -1);
 					var pendingmaxdate = Date.today().addDays(howmanydays);
+					var pending_total_amount = 0.00000000;
+					var overdue_total_amount = 0.00000000;
 
 					$.each(data.stored_receivables_data, function(count, payment){		
 						var paymentdate = Date.parseExact(payment[0], 'yyyy-MM-dd');
 						var userid = $($.parseHTML(payment[1])).attr('href').substring(7);
 
 						if((update_pending && Date.equals(paymentdate, today))||(update_pending && paymentdate.isAfter(today) && paymentdate.isBefore(pendingmaxdate))){
-							$("#helper_pending_payments_table_body").append("<tr><td>"+payment[0]+"</td><td><div id='helper_user_img_"+userid+"'>"+payment[1]+"</div></td><td>"+payment[2]+"</td><td>"+payment[3]+"</td><td>"+payment[4]+"</td></tr>");				
+							$("#helper_pending_payments_table_body").append("<tr><td>"+payment[0]+"</td><td><div id='helper_user_img_"+userid+"'>"+payment[1]+"</div></td><td>"+payment[2]+"</td><td>"+payment[3]+"</td><td>"+payment[4]+"</td></tr>");
+							pending_total_amount += parseFloat(payment[4].replace(/[^0-9.]+/g, ''));											
 						}
 						if(update_overdue && paymentdate.isBefore(today) && paymentdate.isAfter(overduemaxdate)){
 							$("#helper_overdue_payments_table_body").prepend("<tr><td>"+payment[0]+"</td><td><div id='helper_user_img_"+userid+"'>"+payment[1]+"</div></td><td>"+payment[2]+"</td><td>"+payment[3]+"</td><td>"+payment[4]+"</td></tr>");
+							overdue_total_amount += parseFloat(payment[4].replace(/[^0-9.]+/g, ''));											
 						}
 					});	
+					if(pending_total_amount > 0){
+						$("#helper_pending_payments_table_body").prepend("<tr><td colspan='4'><div class='helper_table_total_label'> Total:</div></td><td><div class='helper_table_total'>฿"+pending_total_amount.toFixed(8)+"</div></td></tr>");	
+						$("#helper_pending_payments_table_body").append("<tr><td colspan='4'><div class='helper_table_total_label'> Total:</div></td><td><div class='helper_table_total'>฿"+pending_total_amount.toFixed(8)+"</div></td></tr>");	
+					}
+					if(overdue_total_amount > 0){
+						$("#helper_overdue_payments_table_body").prepend("<tr><td colspan='4'><div class='helper_table_total_label'> Total:</div></td><td><div class='helper_table_total'>฿"+overdue_total_amount.toFixed(8)+"</div></td></tr>");	
+						$("#helper_overdue_payments_table_body").append("<tr><td colspan='4'><div class='helper_table_total_label'> Total:</div></td><td><div class='helper_table_total'>฿"+overdue_total_amount.toFixed(8)+"</div></td></tr>");	
+					}
+
 					if($("#helper_payables_table_body").find('tr').length == 0){
 						if(howmanydays < 3650){
 							$("#helper_payables_table_body").append("<tr><td colspan=5>You have no payments due in the next "+ howmanydays +" days.</td></tr>");
@@ -541,7 +574,6 @@ function enhancePaymentsScreen(){
 				}
 			});				
 		}
-
 		$('.dt-payment').parent().parent().css("width","280px");
 
 		var enhancepayments = function(){
@@ -1217,6 +1249,8 @@ function enhanceFollowersScreen(){
 
 	var makeFollowersScreenPretty = function(){
 		if($(location).attr('href').indexOf('/followers') > 0){
+			begForMoney();
+
 			$('#helper_menu_add_followers').addClass('active');
 			
 			totalfollowers = parseInt($("#body > div:nth-child(4) > div > div > div.col-md-3 > div > div.row.profile-numbers.border-top > div:nth-child(1) > div > div:nth-child(2) > p").text().trim());
@@ -1604,7 +1638,7 @@ function enhanceInvestmentsScreen(){
 		$('#investments-page > div:nth-child(1)').css('display','none');
 		// $('#body > div:nth-child(5)').css('display','none');
 
-		loadInvestments();
+		// loadInvestments();
 
 		var helperdt = $("#my_investments-table").dataTable();
 		helperdt.clear();
@@ -1632,6 +1666,18 @@ function enhanceInvestmentsScreen(){
 
 }
 
+function begForMoney(){
+	chrome.storage.local.get({stopaskingformoney: false}, function (obj) {
+		if(obj.stopaskingformoney == false){
+			var randomnumber = getRandomInt(1,100);
+			if(randomnumber > 95 || randomnumber < 5){
+				$("#body").append("<a href='#' id='helper_beg_button' class='btn btn-primary ratingbutton' style='display: none;' data-controls-modal='modal-window' data-toggle='modal' data-target='#helper_begformoney' role='button'> </a>");
+				$("#body").append("<div class='modal fade' id='helper_begformoney' tabindex='-1' role='dialog' aria-labelledby='helper_begformoney' aria-hidden='true'><div class='modal-dialog'><div class='modal-content'><div class='modal-header'><button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button><h4 class='modal-title' style='text-align: left; font-size: 18px; font-weight: bold;' id='helper_warningmodaltitle'>Thank you for using BTCjam Helper!</h4></div><div class='modal-body'>Remember how sad this screen looked before you started using BTCjam helper? <span style='font-size: 28px;'>&#9786;</span> <br><br>If you're enjoying using BTCjam Helper, please consider donating to help offset the costs of developing and maintaining it.  Bitcoin can be sent to: <a class=\"donate\" href=\"bitcoin:1CQBSCqmZJNi3EABVs4TBcCHbi3Jd9E7fG?amount=1000000\">1CQBSCqmZJNi3EABVs4TBcCHbi3Jd9E7fG</a>.<div class='row'><div class='col-sm-12' id='helper_overdue_warning_borrowers'></div></div></div><div class='modal-footer'><button type='button' id='helper_modal_close' class='btn btn-primary' data-dismiss='modal'>Okay</button></div></div></div>");
+				$("#helper_beg_button")[0].click();
+			}
+		}
+	});
+}
 
 function dynamicSort(property) {
     var sortOrder = 1;
@@ -1652,23 +1698,6 @@ function ascending( a, b ) {
     return a - b;
 }
 
-// /* Inform the backgrund page that 
-//  * this tab should have a page-action */
-
-// /* Listen for message from the popup */
-// chrome.runtime.onMessage.addListener(function(msg, sender, response) {
-//     /* First, validate the message's structure */
-//     if ((msg.from === 'popup') && (msg.subject === 'DOMInfo')) {
-//          Collect the necessary data 
-//          * (For your specific requirements `document.querySelectorAll(...)`
-//          *  should be equivalent to $'s `$(...)`) 
-//         var domInfo = {
-//             total:   document.querySelectorAll('*').length,
-//             inputs:  document.querySelectorAll('input').length,
-//             buttons: document.querySelectorAll('button').length
-//         };
-//         /* Directly respond to the sender (popup), 
-//          * through the specified callback */
-//         response(domInfo);
-//     }
-// });
+function getRandomInt(min, max){
+	return Math.floor(Math.random() * (max - min)) + min;
+}

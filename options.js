@@ -7,14 +7,17 @@ function saveOptions() {
     var fixpaymentscreen = $('#fixpaymentscreen').is(':checked') ? true : false;
     var notifynewlisting = $('#notifynewlisting').is(':checked') ? true : false;
     var fixfollowersscreen = $('#fixfollowersscreen').is(':checked') ? true : false;
-
+    //stopaskingformoney
+    var stopaskingformoney = $('#stopaskingformoney').is(':checked') ? true : false;
+    
     chrome.storage.local.set({
 		exchange: exchange,
 		watchinterval: watchinterval,
 		fixrateuserscreen: fixrateuserscreen,
 		fixpaymentscreen: fixpaymentscreen,
 		notifynewlisting: notifynewlisting,
-		fixfollowersscreen: fixfollowersscreen
+		fixfollowersscreen: fixfollowersscreen,
+        stopaskingformoney: stopaskingformoney
 
     }, function() {
 		// Update status to let user know options were saved.
@@ -43,7 +46,8 @@ function loadOptions() {
       fixrateuserscreen: true,
       fixpaymentscreen: true,
       notifynewlisting: true,
-      fixfollowersscreen: true
+      fixfollowersscreen: true,
+      stopaskingformoney: false
     }, function(options) {
       $('#exchange').val(options.exchange);
       $('#watchinterval').val(options.watchinterval);
@@ -51,6 +55,7 @@ function loadOptions() {
       $('#fixpaymentscreen').prop('checked',options.fixpaymentscreen);
       $('#notifynewlisting').prop('checked',options.notifynewlisting);
       $('#fixfollowersscreen').prop('checked',options.fixfollowersscreen);
+      $('#stopaskingformoney').prop('checked',options.stopaskingformoney);
     });
 }
 

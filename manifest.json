@@ -1,21 +1,18 @@
 {
   "name": "BTCjamHelper",
-  "description": "This fixes many user complaints about the BTCjam interface.",
-  "version": "0.9.5",
+  "description": "Significantly enhances the BTCjam user interface.",
+  "version": "1.0.0",
   "update_url": "http://btcjamhelper.com/updates.xml",
   "permissions": [
     "activeTab",
-    "identity",
     "notifications",
     "alarms",
     "storage",
-    "ttsEngine",
+    "https://btcjam.com/*",
+    "https://api.coindesk.com/v1/bpi/currentprice.json",
     "https://www.bitstamp.net/api/ticker/",
     "https://btc-e.com/api/3/ticker/btc_usd",
-    "https://btcjam.com/",
-    "https://maxcdn.bootstrapcdn.com/*",
-    "https://ajax.googleapis.com/*",
-    "https://www.coinbase.com/*"
+    "https://api.exchange.coinbase.com/products/BTC-USD/book"
   ],
 "icons" : { 
   "16": "icon_16.png",

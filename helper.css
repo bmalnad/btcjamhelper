@@ -148,6 +148,15 @@
 	border-bottom: 1px solid #e5e5e5;
 }
 
+.helper_table_total{
+	font-weight: bold;
+}
+.helper_table_total_label{
+	font-weight: bold;
+	text-align: right;
+}
+
+
 .helper_watching_footer{
 	position: relative;
 	top: 180px;

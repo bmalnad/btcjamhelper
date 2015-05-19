@@ -24,6 +24,7 @@
       bottom: 0;
       width: 100%;
       background-color: #f5f5f5;
+      font-size: 12px;
     }
 
     .container {
@@ -42,6 +43,7 @@
     .container .text-muted {
       margin: 10px 0;
       padding-left: 15px;
+      padding-right: 15px;
     }
 
     .footer > .container {
@@ -51,6 +53,12 @@
 
     .row {
       margin-bottom: 6px;
+    }
+    .bottomrow {
+      position: absolute;
+      bottom: 10;
+      width: 100%;
+      border: 1px solid black;
     }
 
     #popupbody {
@@ -153,6 +161,15 @@
       </div>
 
       <div class="row">
+        <div class="col-sm-5 text-right">
+            Stop asking me to donate money:
+        </div>
+        <div class="col-sm-3">
+          <input name="" id="stopaskingformoney" type="checkbox" value="true">
+        </div>
+      </div>
+
+      <div class="row">
         <div class="col-sm-12">
         </div>
       </div>
@@ -168,7 +185,10 @@
     <footer class="footer">
       <div class="container">
         <div class="row">
-          <p class="text-muted">If you like using BTCjam Helper, please consider donating: <a class="donate" href="bitcoin:1CQBSCqmZJNi3EABVs4TBcCHbi3Jd9E7fG?amount=1000000">1CQBSCqmZJNi3EABVs4TBcCHbi3Jd9E7fG</a></p>
+          <div class="text-muted" style="float: left;">
+          If you like using BTCjam Helper, please consider donating: <a class="donate" href="bitcoin:1CQBSCqmZJNi3EABVs4TBcCHbi3Jd9E7fG?amount=1000000">1CQBSCqmZJNi3EABVs4TBcCHbi3Jd9E7fG</a>
+          </div>
+          <div class="text-muted" style='float: right; text-align: right;'><a href="mailto:support@btcjamhelper.com">support@btcjamhelper.com</a></div>
         </div>
       </div>
     </footer>
