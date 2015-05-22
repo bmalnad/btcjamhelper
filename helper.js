@@ -23,7 +23,8 @@ loadUserInfo();
 
 function loadUserInfo(){
 	try{
-		var userid = $.cookie("ajs_user_id").replace(/[^0-9]+/g, '');
+		var userid = $("body").attr("ng-init").replace(/[^0-9]+/g, '');
+
 		$.getJSON("https://btcjam.com/users/" + userid, function(obj){
 			user = obj;
 			btchelper_init();
@@ -36,7 +37,6 @@ function loadUserInfo(){
 }
 
 function btchelper_init(){
-
 
 	$.extend( $.fn, {
 	    within: function( pSelector ) {
@@ -472,21 +472,37 @@ function enhancePaymentsScreen(){
 	   				break;
 	   		}
 
+
+	   // 			chrome.storage.local.get({stored_investment_data: 'empty'}, function(data) {
+				// 	$(data.stored_investment_data).each(function(count, investment){
+				// 		if(investment.payment_state.toLowerCase().indexOf('in progress') > 0){
+				// 			console.log(investment);
+				// 		}
+				// 	});				
+				// });
+
 	   		if(update_default){
 				chrome.storage.local.get({stored_investment_data: 'empty'}, function(data) {
 					var default_totalinvested = 0.00000000;
 					var default_totalremaining = 0.00000000;
+					var funding_in_progress_total_receivable = 0.00000000;
 					$(data.stored_investment_data).each(function(count, investment){
-						if(investment.payment_state.indexOf('efaulted') >= 0){
+						if(investment.payment_state.toLowerCase().indexOf('defaulted') >= 0){
 							imgstring = "<img class='media-object avatar-notes' src='"+investment.user_avatar+"'>";
 							$("#helper_defaulted_payments_table_body").append("<tr><td>"+investment.closing_date.substring(0,10)+"</td><td><a href='https://btcjam.com/users/"+investment.user_id+"'>"+investment.user_name+"</a>"+imgstring+"</td><td><a target='_blank' href='https://btcjam.com/listings/"+investment.id+"'>"+investment.title+"</a></td><td>฿"+parseFloat(investment.amount).toFixed(8)+"</td><td>฿"+parseFloat(investment.amount_left).toFixed(8)+"</td></tr>");
 							default_totalinvested += parseFloat(investment.amount);
 							default_totalremaining += parseFloat(investment.amount_left);
 						}
+						if(investment.payment_state.toLowerCase().indexOf('in progress')){
+							funding_in_progress_total_receivable += parseFloat(investment.amount_left);
+						}
 				 	});
 				 	if(default_totalinvested > 0){
 						$("#helper_defaulted_payments_table_body").prepend("<tr><td colspan='3'><div class='helper_table_total_label'>Total:</div></td><td><div class='helper_table_total'>฿"+parseFloat(default_totalinvested).toFixed(8)+"</div></td><td><div class='helper_table_total'>฿"+parseFloat(default_totalremaining).toFixed(8)+"</div></td></tr>");
 						$("#helper_defaulted_payments_table_body").append("<tr><td colspan='3'><div class='helper_table_total_label'>Total:</div></td><td><div class='helper_table_total'>฿"+parseFloat(default_totalinvested).toFixed(8)+"</div></td><td><div class='helper_table_total'>฿"+parseFloat(default_totalremaining).toFixed(8)+"</div></td></tr>");
+				 	}
+				 	if(funding_in_progress_total_receivable > 0){
+				 		$("#body > div:nth-child(4) > div.col-md-3 > div:nth-child(3) > dl").append('<dt class="dt-payment" style="width:117px">Funding in Progress</dt><dd style="margin-left:120px">฿'+ funding_in_progress_total_receivable.toFixed(4) +'</dd>');
 				 	}
 				});
 	   		}
@@ -1168,7 +1184,7 @@ function loadInvestments(){
 			investment["payment_state"] = investmentdata.payment_state;
 			investment["payments_made"] = investmentdata.payments_made;
 			investment["number_of_payments"] = investmentdata.listing.number_of_payments;
-			investment["closing_date"] = investmentdata.listing.dtclose;
+			investment["closing_date"] = investmentdata.created_at;
 			investment["status"] = investmentdata.listing.listing_status.name;
 			investment["user_name"] = investmentdata.listing.user.alias;
 			investment["user_id"] = investmentdata.listing.user.id;
@@ -1635,42 +1651,18 @@ function loadReceivables(){
 
 function enhanceInvestmentsScreen(){
 	if($(location).attr('href').indexOf('/listing_investments') > 0){
-		$('#investments-page > div:nth-child(1)').css('display','none');
-		// $('#body > div:nth-child(5)').css('display','none');
-
-		// loadInvestments();
-
-		var helperdt = $("#my_investments-table").dataTable();
-		helperdt.clear();
-
-		var enhanceinvestments = function(){
-		    if(investments_remaining.length > 0){
-
-				investments_remaining.sort(function(a,b) {
-					return b.remaining - a.remaining;
-				});
-
-				// var helperdt = $("#my_investments-table").dataTable();
-				// helperdt.clear();
-
-				//console.log(investments_remaining);
-
-		    }
-		    else {
-		        setTimeout(enhanceinvestments, 100); // check again in 0.10 seconds
-		    }
-		}
-
-		// enhanceinvestments();
+		// $('#investments-page > div:nth-child(1)').css('display','none');
 	}
 
 }
+
+
 
 function begForMoney(){
 	chrome.storage.local.get({stopaskingformoney: false}, function (obj) {
 		if(obj.stopaskingformoney == false){
 			var randomnumber = getRandomInt(1,100);
-			if(randomnumber > 95 || randomnumber < 5){
+			if(randomnumber > 96 || randomnumber < 4){
 				$("#body").append("<a href='#' id='helper_beg_button' class='btn btn-primary ratingbutton' style='display: none;' data-controls-modal='modal-window' data-toggle='modal' data-target='#helper_begformoney' role='button'> </a>");
 				$("#body").append("<div class='modal fade' id='helper_begformoney' tabindex='-1' role='dialog' aria-labelledby='helper_begformoney' aria-hidden='true'><div class='modal-dialog'><div class='modal-content'><div class='modal-header'><button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button><h4 class='modal-title' style='text-align: left; font-size: 18px; font-weight: bold;' id='helper_warningmodaltitle'>Thank you for using BTCjam Helper!</h4></div><div class='modal-body'>Remember how sad this screen looked before you started using BTCjam helper? <span style='font-size: 28px;'>&#9786;</span> <br><br>If you're enjoying using BTCjam Helper, please consider donating to help offset the costs of developing and maintaining it.  Bitcoin can be sent to: <a class=\"donate\" href=\"bitcoin:1CQBSCqmZJNi3EABVs4TBcCHbi3Jd9E7fG?amount=1000000\">1CQBSCqmZJNi3EABVs4TBcCHbi3Jd9E7fG</a>.<div class='row'><div class='col-sm-12' id='helper_overdue_warning_borrowers'></div></div></div><div class='modal-footer'><button type='button' id='helper_modal_close' class='btn btn-primary' data-dismiss='modal'>Okay</button></div></div></div>");
 				$("#helper_beg_button")[0].click();

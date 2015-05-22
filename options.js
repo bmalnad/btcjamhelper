@@ -41,7 +41,7 @@ function saveOptions() {
 function loadOptions() {
     chrome.storage.local.get({
       exchange: 'coindesk',
-      watchinterval: '10000000',
+      watchinterval: '15',
       removewarnings: true, 
       fixrateuserscreen: true,
       fixpaymentscreen: true,

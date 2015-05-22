@@ -3,11 +3,12 @@ chrome.runtime.onInstalled.addListener(function(details){
         console.log("This is a first install!");
         var thisVersion = chrome.runtime.getManifest().version;
         chrome.storage.local.set({
-        exchange: 'coinbase',
-        watchinterval: 10000000,
+        exchange: 'coindesk',
+        watchinterval: 15,
         fixrateuserscreen: true,
         fixpaymentscreen: true,
-        fixfollowersscreen: true
+        fixfollowersscreen: true,
+        stopaskingformoney: false
         }, function() {
         	console.log("BTCjam Helper default preferences set.");
             notifyUserSimple({title: "BTCjamHelper Extension", icon: "icon_128.png", body: "Version "+ thisVersion +" installed successfully."});
@@ -16,11 +17,12 @@ chrome.runtime.onInstalled.addListener(function(details){
     }else if(details.reason == "update"){
         var thisVersion = chrome.runtime.getManifest().version;
         chrome.storage.local.set({
-        exchange: 'coinbase',
-        watchinterval: 10000000,
+        exchange: 'coindesk',
+        watchinterval: 15,
         fixrateuserscreen: true,
         fixpaymentscreen: true,
-        fixfollowersscreen: true
+        fixfollowersscreen: true,
+        stopaskingformoney: false
         }, function() {
             notifyUserSimple({title: "BTCjamHelper Extension", icon: "icon_128.png", body: "Upgraded to version "+ thisVersion +"."});
         });
