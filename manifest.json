@@ -1,12 +1,12 @@
 {
-  "name": "BTCjamHelper",
+  "name": "BTCjam Helper",
   "description": "Significantly enhances the BTCjam user interface.",
   "version": "1.0.2",
   "permissions": [
-    "activeTab",
     "notifications",
     "alarms",
     "storage",
+    "https://btcjam.com",
     "https://btcjam.com/*",
     "https://api.coindesk.com/v1/bpi/currentprice.json",
     "https://www.bitstamp.net/api/ticker/",
