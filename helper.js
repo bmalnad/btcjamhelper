@@ -933,8 +933,7 @@ function enhanceListingScreen(){
 
 		//risk factors
 		var loadriskfactors = function(){
-			var borrowername = user.alias;
-			// var borrowername = $("#body > div.ng-scope > div.row > div.col-sm-2 > div > p:nth-child(2) > a").text();
+			var borrowername = $(".user-img-listing").parent().next('p').children('a').text();
 			$.get($(".user-img-listing").parent().next('p').children('a').attr('href'), function(data){
 				$(data).find("#my_loans-table > tbody > tr").each(function (count, row){
 					var loanstatus = $(row).find('td:nth-child(7)').text().trim();
