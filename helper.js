@@ -1010,7 +1010,14 @@ function enhanceListingScreen(){
 			if($("#btchelper_totalinvested").length){
 				$("#btchelper_totalinvested").text(totalinvested.toFixed(8));
 			}else{
-				var profit = calculatePotentialProfit(totalinvested, parseFloat(ng_currentlisting.listing.max_rate_per_period), parseFloat(ng_currentlisting.listing.number_of_payments));
+				var profit = {};
+				profit.invested = totalinvested;
+				profit.rate = 0;
+				profit.payments = 0;
+				profit.total = ' error';
+				profit.profit = '??';
+				if (ng_currentlisting != null)
+					profit = calculatePotentialProfit(totalinvested, parseFloat(ng_currentlisting.listing.max_rate_per_period), parseFloat(ng_currentlisting.listing.number_of_payments));
 				$(".widgetlight.listingsummary").append("<div id='helperalert' class='helperalert'><strong>Total invested: ฿<span id='btchelper_totalinvested'>"+ totalinvested.toFixed(8) + "</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Potential Return: ฿"+profit.total+"</strong>&nbsp;&nbsp;&nbsp;<small><em>Assumes all payments are made, and BTC price remains constant (fiat linked loans)</em></small></div>");			
 			}
 		});
@@ -1208,7 +1215,7 @@ function runInPageContext(injectcode, delay){
 
 
 function loadInvestments(){
-	var investments_url = "https://btcjam.com/listing_investments.json?dir=desc&page=0&records=1000&sorting=1";
+	var investments_url = "https://btcjam.com/listing_investments.json?dir=desc&for_user=true&page=0&records=1000&sorting=1";
 	$.getJSON(investments_url , function( data ) {
 		$.each(data, function(count, investmentdata){
 			investment = {};
