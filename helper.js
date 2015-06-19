@@ -1055,16 +1055,24 @@ function enhanceListingScreen(){
 					$("input[name=amount]").sendkeys("0.02000001");
 				});
 
-				$("#helper_invest_lefttobefunded").click(function(event){
-					event.preventDefault();
-					event.stopPropagation();
-					var tobefundedamount = ng_currentlisting.amount_left.toFixed(8);
-					$("input[name=amount]").val("");
-					$("input[name=amount]").sendkeys(tobefundedamount);
-				});
+				if(ng_currentlisting != null){
+					var investToBeFunded = function(){
+						$("#helper_invest_lefttobefunded").click(function(event){
+							event.preventDefault();
+							event.stopPropagation();
+							var tobefundedamount = ng_currentlisting.amount_left.toFixed(8);
+							$("input[name=amount]").val("");
+							$("input[name=amount]").sendkeys(tobefundedamount);
+						});											
+					}
+					investToBeFunded();
+				}
+				else{
+					setTimeout(investToBeFunded, 1000);
+				}
 			}
 			else{
-				setTimeout(enhanceInvestModal, 500);
+				setTimeout(enhanceInvestModal, 1000);
 			}
 		}
 
@@ -1209,7 +1217,6 @@ function enhanceNotesScreen(){
 
 function runInPageContext(injectcode, delay){
 	var delaythis = function(){
-		console.log("injection");
 		var script = document.createElement('script');
 		script.textContent = injectcode;
 		(document.head||document.documentElement).appendChild(script);
@@ -1710,7 +1717,7 @@ function begForMoney(){
 	chrome.storage.local.get({stopaskingformoney: false}, function (obj) {
 		if(obj.stopaskingformoney == false){
 			var randomnumber = getRandomInt(1,100);
-			if(randomnumber > 96 || randomnumber < 4){
+			if(randomnumber > 95 || randomnumber < 5){
 				$("#body").append("<a href='#' id='helper_beg_button' class='btn btn-primary ratingbutton' style='display: none;' data-controls-modal='modal-window' data-toggle='modal' data-target='#helper_begformoney' role='button'> </a>");
 				$("#body").append("<div class='modal fade' id='helper_begformoney' tabindex='-1' role='dialog' aria-labelledby='helper_begformoney' aria-hidden='true'><div class='modal-dialog'><div class='modal-content'><div class='modal-header'><button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button><h4 class='modal-title' style='text-align: left; font-size: 18px; font-weight: bold;' id='helper_warningmodaltitle'>Thank you for using BTCjam Helper!</h4></div><div class='modal-body'>Remember how sad this screen looked before you started using BTCjam helper? <span style='font-size: 28px;'>&#9786;</span> <br><br>If you're enjoying using BTCjam Helper, please consider donating to help offset the costs of developing and maintaining it.  Bitcoin can be sent to: <a class=\"donate\" href=\"bitcoin:1CQBSCqmZJNi3EABVs4TBcCHbi3Jd9E7fG?amount=1000000\">1CQBSCqmZJNi3EABVs4TBcCHbi3Jd9E7fG</a>. Thank you for your support!<div class='row'><div class='col-sm-12' id='helper_overdue_warning_borrowers'></div></div></div><div class='modal-footer'><button type='button' id='helper_modal_close' class='btn btn-primary' data-dismiss='modal'>Okay</button></div></div></div>");
 				$("#helper_beg_button")[0].click();
@@ -1720,12 +1727,6 @@ function begForMoney(){
 }
 
 function calculatePotentialProfit(invested, rate, payments){
-
-	console.log("invested:" + invested);
-	console.log("rate:" + rate);
-	console.log("payments:" + payments);
-
-
 	invested = parseFloat(invested);
 	rate = parseFloat(rate) / 100;
 	payments = parseFloat(payments);
@@ -1746,7 +1747,6 @@ function calculatePotentialProfit(invested, rate, payments){
 	result.profit = parseFloat(result.total - invested).toFixed(8);
 
 	return result;
-
 }
 
 function dynamicSort(property) {
