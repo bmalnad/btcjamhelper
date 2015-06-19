@@ -1125,6 +1125,7 @@ function enhanceNotesScreen(){
 						$(row).find("td:nth-child(7)").append("<br>("+noteyield.toFixed(2) + "%)");
 					}
 					if(yieldtext.indexOf('-') >= 0){
+						$(row).find("td:nth-child(8) > a").removeClass("btn-primary").addClass("btn-danger").text("NO!");
 						$(row).find("td:nth-child(7)").css('color','red').css('font-weight', 'bold');
 					}
 				});
