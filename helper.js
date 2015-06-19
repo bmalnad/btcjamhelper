@@ -913,7 +913,7 @@ function enhanceListingScreen(){
 
 		var injectAngularCode = '(' + function(){
 			var angulardata = angular.element('[ng-controller=ListingsShowController]').scope().data;
-			document.dispatchEvent(new CustomEvent('BTCjamHelper_LoadAgularData', {detail: JSON.parse(JSON.stringify(angulardata))}));
+			document.dispatchEvent(new CustomEvent('BTCjamHelper_LoadAgularData', {detail: angulardata}));
 		} + ')();';
 		var script = document.createElement('script');
 		script.textContent = injectAngularCode;
@@ -1001,7 +1001,6 @@ function enhanceListingScreen(){
 		//total invested
 		chrome.storage.local.get({stored_investment_data: 'empty'}, function(data) {
 			var listingid = $(location).attr('href').substring($(location).attr('href').lastIndexOf('/') + 1);
-			var profitStatement;
 			listingid = listingid.indexOf('-') >= 0 ? listingid.substring(0, listingid.indexOf('-')) : listingid;
 			$(data.stored_investment_data).each(function(count, investment){
 				if(investment.id == listingid){
@@ -1011,13 +1010,15 @@ function enhanceListingScreen(){
 			if($("#btchelper_totalinvested").length){
 				$("#btchelper_totalinvested").text(totalinvested.toFixed(8));
 			}else{
-				try {
+				var profit = {};
+				profit.invested = totalinvested;
+				profit.rate = 0;
+				profit.payments = 0;
+				profit.total = ' error';
+				profit.profit = '??';
+				if (ng_currentlisting != null)
 					profit = calculatePotentialProfit(totalinvested, parseFloat(ng_currentlisting.listing.max_rate_per_period), parseFloat(ng_currentlisting.listing.number_of_payments));
-					profitStatement = "<strong>Potential Return: ฿" + profit.total +"</strong>&nbsp;&nbsp;&nbsp;<small><em>Assumes all payments are made, and BTC price remains constant (fiat linked loans)</em></small>";
-				} catch(exception){
-					profitStatement = "<strong>Potential Return: ERROR</strong>&nbsp;&nbsp;&nbsp;<small><em>(BTCjam Helper experienced an error calculating this value)</em></small>";
-				}
-				$(".widgetlight.listingsummary").append("<div id='helperalert' class='helperalert'><strong>Total invested: ฿<span id='btchelper_totalinvested'>"+ totalinvested.toFixed(8) + "</span></strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+profitStatement + "</div>");			
+				$(".widgetlight.listingsummary").append("<div id='helperalert' class='helperalert'><strong>Total invested: ฿<span id='btchelper_totalinvested'>"+ totalinvested.toFixed(8) + "</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Potential Return: ฿"+profit.total+"</strong>&nbsp;&nbsp;&nbsp;<small><em>Assumes all payments are made, and BTC price remains constant (fiat linked loans)</em></small></div>");			
 			}
 		});
 
