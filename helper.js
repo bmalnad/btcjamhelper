@@ -1010,20 +1010,18 @@ function enhanceListingScreen(){
 		 	});
 			if($("#btchelper_totalinvested").length){
 				$("#btchelper_totalinvested").text(totalinvested.toFixed(8));
-			}else{
-				var profit = {};
-				profit.invested = totalinvested;
-				profit.rate = 0;
-				profit.payments = 0;
-				profit.total = ' error';
-				profit.profit = '??';
-				if (ng_currentlisting != null){
 
+			} else{
+				try {
+					profit = calculatePotentialProfit(totalinvested, parseFloat(ng_currentlisting.max_rate_per_period), parseFloat(ng_currentlisting.number_of_payments));
+					profitStatement = "<strong>Potential Return: ฿" + profit.total +"</strong>&nbsp;&nbsp;&nbsp;<small><em>Assumes all payments are made, and BTC price remains constant (fiat linked loans)</em></small>";
 					console.log(ng_currentlisting);
 
-					profit = calculatePotentialProfit(totalinvested, parseFloat(ng_currentlisting.max_rate_per_period), parseFloat(ng_currentlisting.number_of_payments));
+				} catch(exception){
+					profitStatement = "<strong>Potential Return: ERROR</strong>&nbsp;&nbsp;&nbsp;<small><em>(BTCjam Helper experienced an error calculating this value)</em></small>";
+					console.log(exception);
 				}
-				$(".widgetlight.listingsummary").append("<div id='helperalert' class='helperalert'><strong>Total invested: ฿<span id='btchelper_totalinvested'>"+ totalinvested.toFixed(8) + "</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Potential Return: ฿"+profit.total+"</strong>&nbsp;&nbsp;&nbsp;<small><em>Assumes all payments are made, and BTC price remains constant (fiat linked loans)</em></small></div>");			
+				$(".widgetlight.listingsummary").append("<div id='helperalert' class='helperalert'><strong>Total invested: ฿<span id='btchelper_totalinvested'>"+ totalinvested.toFixed(8) + "</span></strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+profitStatement + "</div>");	
 			}
 		});
 
