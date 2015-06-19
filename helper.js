@@ -912,13 +912,14 @@ function enhanceListingScreen(){
 		},false);
 
 		var injectAngularCode = '(' + function(){
-			var angulardata = angular.element('[ng-controller=ListingsShowController]').scope().data;
+			var angulardata = angular.element('[ng-controller=ListingsShowController]').scope().data.listing;
+			console.log(angulardata);
 			document.dispatchEvent(new CustomEvent('BTCjamHelper_LoadAgularData', {detail: angulardata}));
 		} + ')();';
 		var script = document.createElement('script');
 		script.textContent = injectAngularCode;
 		(document.head||document.documentElement).appendChild(script);
-		script.parentNode.removeChild(script);
+		script.parentNode.removeChild(script);			
 
 		var totalinvested = parseFloat(0);
 
@@ -1016,8 +1017,12 @@ function enhanceListingScreen(){
 				profit.payments = 0;
 				profit.total = ' error';
 				profit.profit = '??';
-				if (ng_currentlisting != null)
-					profit = calculatePotentialProfit(totalinvested, parseFloat(ng_currentlisting.listing.max_rate_per_period), parseFloat(ng_currentlisting.listing.number_of_payments));
+				if (ng_currentlisting != null){
+
+					console.log(ng_currentlisting);
+
+					profit = calculatePotentialProfit(totalinvested, parseFloat(ng_currentlisting.max_rate_per_period), parseFloat(ng_currentlisting.number_of_payments));
+				}
 				$(".widgetlight.listingsummary").append("<div id='helperalert' class='helperalert'><strong>Total invested: ฿<span id='btchelper_totalinvested'>"+ totalinvested.toFixed(8) + "</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Potential Return: ฿"+profit.total+"</strong>&nbsp;&nbsp;&nbsp;<small><em>Assumes all payments are made, and BTC price remains constant (fiat linked loans)</em></small></div>");			
 			}
 		});
@@ -1026,8 +1031,8 @@ function enhanceListingScreen(){
 			if($("input[name=amount]").length){
 				$("#helper_invest_links_div_left").remove();
 				$("#helper_invest_links_div_right").remove();
-				$("#invest-funds-modal > div.modal-dialog > div > div.modal-body.center > div > div.row > div > div > div.col-sm-5.col-sm-offset-1 > div").append("<div id='helper_invest_links_div_left' class='text-center link'><a id='helper_invest_balance' href='#'>Invest All</a> &nbsp;<a id='helper_invest_half' href='#'>[1/2]</a> &nbsp;<a id='helper_invest_ratingminimum' href='#'>[0.02]</a></div>");
-				$("#invest-funds-modal > div.modal-dialog > div > div.modal-body.center > div > div.row > div > div > div:nth-child(3) > div").append("<div class='text-center' id='helper_invest_links_div_right'><a id='helper_invest_lefttobefunded' href='#'>Invest this amount</a></div>");
+				$("#invest-funds-modal > div.modal-container > div.modal-dialog > div > div.modal-body.center > div > div.row > div > div > div.col-sm-5.col-sm-offset-1 > div").append("<div id='helper_invest_links_div_left' class='text-center link'><a id='helper_invest_balance' href='#'>Invest All</a> &nbsp;<a id='helper_invest_half' href='#'>[1/2]</a> &nbsp;<a id='helper_invest_ratingminimum' href='#'>[0.02]</a></div>");
+				$("#invest-funds-modal > div.modal-container > div.modal-dialog > div > div.modal-body.center > div > div.row > div > div > div:nth-child(3) > div").append("<div class='text-center' id='helper_invest_links_div_right'><a id='helper_invest_lefttobefunded' href='#'>Invest this amount</a></div>");
 
 				$("#helper_invest_balance").click(function(event){
 					event.preventDefault();
@@ -1050,16 +1055,24 @@ function enhanceListingScreen(){
 					$("input[name=amount]").sendkeys("0.02000001");
 				});
 
-				$("#helper_invest_lefttobefunded").click(function(event){
-					event.preventDefault();
-					event.stopPropagation();
-					var tobefundedamount = ng_currentlisting.listing.amount_left.toFixed(8);
-					$("input[name=amount]").val("");
-					$("input[name=amount]").sendkeys(tobefundedamount);
-				});
+				if(ng_currentlisting != null){
+					var investToBeFunded = function(){
+						$("#helper_invest_lefttobefunded").click(function(event){
+							event.preventDefault();
+							event.stopPropagation();
+							var tobefundedamount = ng_currentlisting.amount_left.toFixed(8);
+							$("input[name=amount]").val("");
+							$("input[name=amount]").sendkeys(tobefundedamount);
+						});											
+					}
+					investToBeFunded();
+				}
+				else{
+					setTimeout(investToBeFunded, 1000);
+				}
 			}
 			else{
-				setTimeout(enhanceInvestModal, 500);
+				setTimeout(enhanceInvestModal, 1000);
 			}
 		}
 
@@ -1112,6 +1125,7 @@ function enhanceNotesScreen(){
 						$(row).find("td:nth-child(7)").append("<br>("+noteyield.toFixed(2) + "%)");
 					}
 					if(yieldtext.indexOf('-') >= 0){
+						$(row).find("td:nth-child(8) > a").removeClass("btn-primary").addClass("btn-danger").text("NO!");
 						$(row).find("td:nth-child(7)").css('color','red').css('font-weight', 'bold');
 					}
 				});
@@ -1204,7 +1218,6 @@ function enhanceNotesScreen(){
 
 function runInPageContext(injectcode, delay){
 	var delaythis = function(){
-		console.log("injection");
 		var script = document.createElement('script');
 		script.textContent = injectcode;
 		(document.head||document.documentElement).appendChild(script);
@@ -1705,7 +1718,7 @@ function begForMoney(){
 	chrome.storage.local.get({stopaskingformoney: false}, function (obj) {
 		if(obj.stopaskingformoney == false){
 			var randomnumber = getRandomInt(1,100);
-			if(randomnumber > 96 || randomnumber < 4){
+			if(randomnumber > 95 || randomnumber < 5){
 				$("#body").append("<a href='#' id='helper_beg_button' class='btn btn-primary ratingbutton' style='display: none;' data-controls-modal='modal-window' data-toggle='modal' data-target='#helper_begformoney' role='button'> </a>");
 				$("#body").append("<div class='modal fade' id='helper_begformoney' tabindex='-1' role='dialog' aria-labelledby='helper_begformoney' aria-hidden='true'><div class='modal-dialog'><div class='modal-content'><div class='modal-header'><button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-hidden=\"true\">&times;</button><h4 class='modal-title' style='text-align: left; font-size: 18px; font-weight: bold;' id='helper_warningmodaltitle'>Thank you for using BTCjam Helper!</h4></div><div class='modal-body'>Remember how sad this screen looked before you started using BTCjam helper? <span style='font-size: 28px;'>&#9786;</span> <br><br>If you're enjoying using BTCjam Helper, please consider donating to help offset the costs of developing and maintaining it.  Bitcoin can be sent to: <a class=\"donate\" href=\"bitcoin:1CQBSCqmZJNi3EABVs4TBcCHbi3Jd9E7fG?amount=1000000\">1CQBSCqmZJNi3EABVs4TBcCHbi3Jd9E7fG</a>. Thank you for your support!<div class='row'><div class='col-sm-12' id='helper_overdue_warning_borrowers'></div></div></div><div class='modal-footer'><button type='button' id='helper_modal_close' class='btn btn-primary' data-dismiss='modal'>Okay</button></div></div></div>");
 				$("#helper_beg_button")[0].click();
@@ -1715,7 +1728,6 @@ function begForMoney(){
 }
 
 function calculatePotentialProfit(invested, rate, payments){
-
 	invested = parseFloat(invested);
 	rate = parseFloat(rate) / 100;
 	payments = parseFloat(payments);
@@ -1736,7 +1748,6 @@ function calculatePotentialProfit(invested, rate, payments){
 	result.profit = parseFloat(result.total - invested).toFixed(8);
 
 	return result;
-
 }
 
 function dynamicSort(property) {
