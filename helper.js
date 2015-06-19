@@ -1031,8 +1031,8 @@ function enhanceListingScreen(){
 			if($("input[name=amount]").length){
 				$("#helper_invest_links_div_left").remove();
 				$("#helper_invest_links_div_right").remove();
-				$("#invest-funds-modal > div.modal-dialog > div > div.modal-body.center > div > div.row > div > div > div.col-sm-5.col-sm-offset-1 > div").append("<div id='helper_invest_links_div_left' class='text-center link'><a id='helper_invest_balance' href='#'>Invest All</a> &nbsp;<a id='helper_invest_half' href='#'>[1/2]</a> &nbsp;<a id='helper_invest_ratingminimum' href='#'>[0.02]</a></div>");
-				$("#invest-funds-modal > div.modal-dialog > div > div.modal-body.center > div > div.row > div > div > div:nth-child(3) > div").append("<div class='text-center' id='helper_invest_links_div_right'><a id='helper_invest_lefttobefunded' href='#'>Invest this amount</a></div>");
+				$("#invest-funds-modal > div.modal-container > div.modal-dialog > div > div.modal-body.center > div > div.row > div > div > div.col-sm-5.col-sm-offset-1 > div").append("<div id='helper_invest_links_div_left' class='text-center link'><a id='helper_invest_balance' href='#'>Invest All</a> &nbsp;<a id='helper_invest_half' href='#'>[1/2]</a> &nbsp;<a id='helper_invest_ratingminimum' href='#'>[0.02]</a></div>");
+				$("#invest-funds-modal > div.modal-container > div.modal-dialog > div > div.modal-body.center > div > div.row > div > div > div:nth-child(3) > div").append("<div class='text-center' id='helper_invest_links_div_right'><a id='helper_invest_lefttobefunded' href='#'>Invest this amount</a></div>");
 
 				$("#helper_invest_balance").click(function(event){
 					event.preventDefault();
