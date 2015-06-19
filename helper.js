@@ -912,13 +912,14 @@ function enhanceListingScreen(){
 		},false);
 
 		var injectAngularCode = '(' + function(){
-			var angulardata = angular.element('[ng-controller=ListingsShowController]').scope().data;
+			var angulardata = angular.element('[ng-controller=ListingsShowController]').scope().data.listing;
+			console.log(angulardata);
 			document.dispatchEvent(new CustomEvent('BTCjamHelper_LoadAgularData', {detail: angulardata}));
 		} + ')();';
 		var script = document.createElement('script');
 		script.textContent = injectAngularCode;
 		(document.head||document.documentElement).appendChild(script);
-		script.parentNode.removeChild(script);
+		script.parentNode.removeChild(script);			
 
 		var totalinvested = parseFloat(0);
 
@@ -1016,8 +1017,12 @@ function enhanceListingScreen(){
 				profit.payments = 0;
 				profit.total = ' error';
 				profit.profit = '??';
-				if (ng_currentlisting != null)
-					profit = calculatePotentialProfit(totalinvested, parseFloat(ng_currentlisting.listing.max_rate_per_period), parseFloat(ng_currentlisting.listing.number_of_payments));
+				if (ng_currentlisting != null){
+
+					console.log(ng_currentlisting);
+
+					profit = calculatePotentialProfit(totalinvested, parseFloat(ng_currentlisting.max_rate_per_period), parseFloat(ng_currentlisting.number_of_payments));
+				}
 				$(".widgetlight.listingsummary").append("<div id='helperalert' class='helperalert'><strong>Total invested: ฿<span id='btchelper_totalinvested'>"+ totalinvested.toFixed(8) + "</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Potential Return: ฿"+profit.total+"</strong>&nbsp;&nbsp;&nbsp;<small><em>Assumes all payments are made, and BTC price remains constant (fiat linked loans)</em></small></div>");			
 			}
 		});
@@ -1053,7 +1058,7 @@ function enhanceListingScreen(){
 				$("#helper_invest_lefttobefunded").click(function(event){
 					event.preventDefault();
 					event.stopPropagation();
-					var tobefundedamount = ng_currentlisting.listing.amount_left.toFixed(8);
+					var tobefundedamount = ng_currentlisting.amount_left.toFixed(8);
 					$("input[name=amount]").val("");
 					$("input[name=amount]").sendkeys(tobefundedamount);
 				});
@@ -1715,6 +1720,11 @@ function begForMoney(){
 }
 
 function calculatePotentialProfit(invested, rate, payments){
+
+	console.log("invested:" + invested);
+	console.log("rate:" + rate);
+	console.log("payments:" + payments);
+
 
 	invested = parseFloat(invested);
 	rate = parseFloat(rate) / 100;
