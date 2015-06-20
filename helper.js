@@ -1735,7 +1735,7 @@ function calculatePotentialProfit(invested, rate, payments){
 	result.invested = invested;
 	result.rate = rate;
 	result.payments = payments;
-	result.total = 0.00000000;
+	result.total = parseFloat(0).toFixed(8);
 	result.profit = 0.00000000;
 
 	if(invested == 0){
