@@ -1323,8 +1323,8 @@ function enhanceFollowersScreen(){
 
 			$('#helper_menu_add_followers').addClass('active');
 			
-			totalfollowers = parseInt($("#body > div:nth-child(4) > div > div > div.col-md-3 > div > div.row.profile-numbers.border-top > div:nth-child(1) > div > div:nth-child(2) > p").text().trim());
-			totalfollowing = parseInt($("#body > div:nth-child(4) > div > div > div.col-md-3 > div > div.row.profile-numbers.border-top > div:nth-child(2) > div > div:nth-child(2) > p").text().trim());
+			totalfollowers = parseInt($("div.profile-numbers > div:nth-child(1) > div > div:nth-child(2) > p").text().trim());
+			totalfollowing = parseInt($("div.profile-numbers > div:nth-child(2) > div > div:nth-child(2) > p").text().trim());
 
 			$('#body > div:nth-child(4) > div > div > div.col-md-3').css("display","none");
 			$('#body > div:nth-child(4) > div > div > div:nth-child(2)').css("display","none");
@@ -1600,7 +1600,7 @@ function loadFollowers(){
 	followers_following_combined = [];
 
 	$.get("https://btcjam.com/followers", function(data){
-		totalusers = $(data).find("#body > div:nth-child(4) > div > div > div.col-md-3 > div > div.row.profile-numbers.border-top > div:nth-child(2) > div > div:nth-child(2) > p").text().trim();
+		totalusers = $(data).find("div.profile-numbers > div:nth-child(2) > div > div:nth-child(2) > p").text().trim();
 		pages = Math.ceil(totalusers / 10);		
 
 		for(i=1; i<=pages; i++){
@@ -1623,7 +1623,7 @@ function loadFollowers(){
 			});		
 		}
 
-		totalusers = $(data).find("#body > div:nth-child(4) > div > div > div.col-md-3 > div > div.row.profile-numbers.border-top > div:nth-child(1) > div > div:nth-child(2) > p").text().trim();
+		totalusers = $(data).find("div.profile-numbers > div:nth-child(1) > div > div:nth-child(2) > p").text().trim();
 		pages = Math.ceil(totalusers / 10);		
 		for(i=1; i<=pages; i++){
 			$.get("https://btcjam.com/followers?follower=" + i, function(data){
