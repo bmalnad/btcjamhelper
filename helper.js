@@ -104,17 +104,14 @@ function displayMenuBar(){
 	if($('#body > div:nth-child(2) > div > ul > li').text().indexOf("Payments") == -1){
 		$('#body > div:nth-child(2) > div > ul').append("<li id='helper_menu_add_payments'><a href='/my_account/payments'>Payments</a></li>");
 	}
-	if($('#body > div:nth-child(2) > div > ul > li').text().indexOf("Transactions") == -1){
-		$('#body > div:nth-child(2) > div > ul').append("<li id='helper_menu_add_transactions'><a href='/transactions'>Transactions</a></li>");
-	}
 
 	$('#body > div:nth-child(2) > div > ul').append("<li id='helper_menu_add_followers'><a href='/followers'>Follow / Watch Users</a></li>");
 
 	//adds missing "Get a Loan" or "Invest" button at top
 	if($('#bs-example-navbar-collapse-1 > ul > li:nth-child(2) > a').text().indexOf("Loan") >= 0){
-		$('<li><a class="btn btn-green navbar-btn hidden-xs" href="/listings">Invest</a></li>').insertAfter($('#bs-example-navbar-collapse-1 > ul > li:nth-child(2)'));
+		$('<li><a class="btn btn-submit btn-small navbar-btn hidden-xs" href="/listings">Invest</a></li>').insertAfter($('#bs-example-navbar-collapse-1 > ul > li:nth-child(2)'));
 	}else{
-		$('<li><a class="btn btn-green navbar-btn hidden-xs" href="/listings/new">Get a Loan</a></li>').insertAfter($('#bs-example-navbar-collapse-1 > ul > li:nth-child(2)'));
+		$('<li><a class="btn btn-submit btn-small navbar-btn hidden-xs" href="/listings/new">Get a Loan</a></li>').insertAfter($('#bs-example-navbar-collapse-1 > ul > li:nth-child(2)'));
 	}
 
 	// var menuhtml = "<div class=\"row\"><div class=\"col-md-12\"><ul class=\"nav nav-pills\"><li class=\"active\"><a href=\"/\">Dashboard</a></li><li><a href=\"/my_account/credit_rating\">Credit Rating</a></li><li><a href=\"/my_account/reputation\">Reputation</a></li><li><a href=\"/listing_investments\">Investments</a></li><li><a href=\"/my_account/loans\">Loans</a></li><li><a href=\"/my_account/payments\">Payments</a></li><li><a href=\"/users/referrals\">Referrals</a></li><li><a href=\"/users/edit\">Settings</a></li></ul></div></div>";
@@ -1323,8 +1320,8 @@ function enhanceFollowersScreen(){
 
 			$('#helper_menu_add_followers').addClass('active');
 			
-			totalfollowers = parseInt($("div.profile-numbers > div:nth-child(1) > div > div:nth-child(2) > p").text().trim());
-			totalfollowing = parseInt($("div.profile-numbers > div:nth-child(2) > div > div:nth-child(2) > p").text().trim());
+			totalfollowers = parseInt($("#body > div:nth-child(4) > div > div > div.col-md-3 > div > div > div > div:nth-child(3) > div > div > a > h3").text().trim());
+			totalfollowing = parseInt($("#body > div:nth-child(4) > div > div > div.col-md-3 > div > div > div > div:nth-child(4) > div > div > a > h3").text().trim());
 
 			$('#body > div:nth-child(4) > div > div > div.col-md-3').css("display","none");
 			$('#body > div:nth-child(4) > div > div > div:nth-child(2)').css("display","none");
@@ -1599,9 +1596,14 @@ function loadFollowers(){
 	var followers = [];
 	followers_following_combined = [];
 
+	console.log("loading followers");
+
 	$.get("https://btcjam.com/followers", function(data){
-		totalusers = $(data).find("div.profile-numbers > div:nth-child(2) > div > div:nth-child(2) > p").text().trim();
+		console.log("called $.get");
+		console.log(data);
+		totalusers = $(data).find("#body > div:nth-child(4) > div > div > div.col-md-3 > div > div > div > div:nth-child(4) > div > div > a > h3").text().trim();
 		pages = Math.ceil(totalusers / 10);		
+
 
 		for(i=1; i<=pages; i++){
 			$.get("https://btcjam.com/followers?following=" + i, function(data){
@@ -1623,7 +1625,7 @@ function loadFollowers(){
 			});		
 		}
 
-		totalusers = $(data).find("div.profile-numbers > div:nth-child(1) > div > div:nth-child(2) > p").text().trim();
+		totalusers = $(data).find("#body > div:nth-child(4) > div > div > div.col-md-3 > div > div > div > div:nth-child(3) > div > div > a > h3").text().trim();
 		pages = Math.ceil(totalusers / 10);		
 		for(i=1; i<=pages; i++){
 			$.get("https://btcjam.com/followers?follower=" + i, function(data){
@@ -1709,7 +1711,6 @@ function enhanceInvestmentsScreen(){
 	}
 
 }
-
 
 
 function begForMoney(){
