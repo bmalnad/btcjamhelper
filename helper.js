@@ -26,11 +26,11 @@ function loadUserInfo(){
 	try{
 
 		document.addEventListener('BTCjamHelper_LoadUserInfo', function(e) {
-			user = e.detail.user;
+			user = e.detail;
 		},false);
 
 		var injectAngularCode = '(' + function(){
-			var angulardata = angular.element('body').scope().data;
+			var angulardata = angular.element('body').scope().user;
 			document.dispatchEvent(new CustomEvent('BTCjamHelper_LoadUserInfo', {detail: angulardata}));
 		} + ')();';
 		var script = document.createElement('script');
@@ -53,7 +53,6 @@ function loadUserInfo(){
 }
 
 function btchelper_init(){
-
 	$.extend( $.fn, {
 	    within: function( pSelector ) {
 	        return this.filter(function(){
@@ -104,17 +103,14 @@ function displayMenuBar(){
 	if($('#body > div:nth-child(2) > div > ul > li').text().indexOf("Payments") == -1){
 		$('#body > div:nth-child(2) > div > ul').append("<li id='helper_menu_add_payments'><a href='/my_account/payments'>Payments</a></li>");
 	}
-	if($('#body > div:nth-child(2) > div > ul > li').text().indexOf("Transactions") == -1){
-		$('#body > div:nth-child(2) > div > ul').append("<li id='helper_menu_add_transactions'><a href='/transactions'>Transactions</a></li>");
-	}
 
-	$('#body > div:nth-child(2) > div > ul').append("<li id='helper_menu_add_followers'><a href='/followers'>Follow / Watch Users</a></li>");
+	$('#body > div:nth-child(2) > div > ul').append("<li id='helper_menu_add_followers'><a href='/followers'>Follow / Watch</a></li>");
 
 	//adds missing "Get a Loan" or "Invest" button at top
 	if($('#bs-example-navbar-collapse-1 > ul > li:nth-child(2) > a').text().indexOf("Loan") >= 0){
-		$('<li><a class="btn btn-green navbar-btn hidden-xs" href="/listings">Invest</a></li>').insertAfter($('#bs-example-navbar-collapse-1 > ul > li:nth-child(2)'));
+		$('<li><a class="btn btn-submit btn-small navbar-btn hidden-xs" href="/listings">Invest</a></li>').insertAfter($('#bs-example-navbar-collapse-1 > ul > li:nth-child(2)'));
 	}else{
-		$('<li><a class="btn btn-green navbar-btn hidden-xs" href="/listings/new">Get a Loan</a></li>').insertAfter($('#bs-example-navbar-collapse-1 > ul > li:nth-child(2)'));
+		$('<li><a class="btn btn-submit btn-small navbar-btn hidden-xs" href="/listings/new">Get a Loan</a></li>').insertAfter($('#bs-example-navbar-collapse-1 > ul > li:nth-child(2)'));
 	}
 
 	// var menuhtml = "<div class=\"row\"><div class=\"col-md-12\"><ul class=\"nav nav-pills\"><li class=\"active\"><a href=\"/\">Dashboard</a></li><li><a href=\"/my_account/credit_rating\">Credit Rating</a></li><li><a href=\"/my_account/reputation\">Reputation</a></li><li><a href=\"/listing_investments\">Investments</a></li><li><a href=\"/my_account/loans\">Loans</a></li><li><a href=\"/my_account/payments\">Payments</a></li><li><a href=\"/users/referrals\">Referrals</a></li><li><a href=\"/users/edit\">Settings</a></li></ul></div></div>";
@@ -196,7 +192,7 @@ function enhancePaymentsScreen(){
 			$("#my_payments-table").css("display", "none");
 
 			$("#body > div:nth-child(4) > div.col-md-9").append("<ul class='nav nav-tabs'> <li id='helper_payables_tab' role='presentation' class='helper_tab'><a class='helper_tab_a' href='#'>Payables</a></li> <li id='helper_overdue_tab' role='presentation' class='active helper_tab'><a class='helper_tab_a' href='#'>Overdue Receivables</a></li>  <li id='helper_pending_tab' class='helper_tab' role='presentation'><a class='helper_tab_a' href='#'>Pending Receivables</a></li>  <li id='helper_defaulted_tab' class='helper_tab' role='presentation'><a class='helper_tab_a' href='#'>Defaulted Receivables</a></li></ul><div id='helper_payments' class='row' style='background-color: #ffffff; padding: 4px;'></div>");
-			$("#helper_payments").append("<table id='helper_payables_table' class='table table-striped table-bordered tablesorter'><thead id='helper_payables_table_head'><tr><th colspan='5' style=' padding: 8px; font-weight: bold; font-size: 14px; background-color: #0068c0; color: #ffffff'> <a href='#' class='btn btn-default' id='helper_payables_7'>Next 7 Days</a> <a href='#' class='btn btn-default' id='helper_payables_15'>Next 15 Days</a> <a href='#' class='btn btn-default' id='helper_payables_30'>Next 30 Days</a> <a href='#' class='btn btn-default' id='helper_payables_60'>Next 60 Days</a> <a href='#' class='btn btn-default' id='helper_payables_all'>All</a><a style='float: right;' download='btcjam_payables.xls' class='btn btn-default' id='helper_export_payables'>Export to Excel</a></th></tr><tr id='helper_payables_table_header_2nd_row'><th width='10%'>Due Date</th><th>Loan</th><th>Payment #</th><th width='10%'>Amount</th><th width='10%'>Paid</th></tr></thead></thead><tbody id='helper_payables_table_body'><tr><td colspan=5>Loading payables...</td></tr></tbody></table><table id='helper_overdue_payments_table' class='table table-striped table-bordered tablesorter'><thead id='helper_overdue_payments_table_head'><tr><th colspan='5' style=' padding: 8px; font-weight: bold; font-size: 14px; background-color: #DC143C; color: #ffffff'><a href='#' class='btn btn-default' id='helper_overdue_7'> < 7 Days</a> <a href='#' class='btn btn-default' id='helper_overdue_15'> < 15 Days</a> <a href='#' class='btn btn-default' id='helper_overdue_30'> < 30 Days</a> <a class='btn btn-default' id='helper_overdue_60'> < 60 Days</a>  <a class='btn btn-default' id='helper_overdue_all'>All</a>  <a style='float: right;' download='btcjam_overdue_payments.xls' class='btn btn-default' id='helper_export_overdue'>Export to Excel</a> </th></tr><tr id='helper_overdue_payments_table_header_2nd_row'><th width='10%'>Due Date</th><th width='10%'>Borrower</th><th>Loan</th><th width='10%'>Payment #</th><th>Amount</th></tr></thead><tbody id='helper_overdue_payments_table_body'><tr><td colspan=5>Loading overdue receivables...</td></tr></tbody><tfoot id='helper_overdue_payments_table_foot'></tfoot></table><table id='helper_pending_payments_table' class='table table-striped table-bordered tablesorter'><thead id='helper_pending_payments_table_head'><tr><th colspan='5' style=' padding: 8px; font-weight: bold; font-size: 14px; background-color: #008000; color: #000000'> <a class='btn btn-default' id='helper_pending_7'>Next 7 Days</a>  <a class='btn btn-default' id='helper_pending_15'>Next 15 Days</a>  <a class='btn btn-default' id='helper_pending_30'>Next 30 Days</a> <a class='btn btn-default' id='helper_pending_60'>Next 60 Days</a> <a class='btn btn-default' id='helper_pending_all'>All</a> <a style='float: right;' download='btcjam_pending_payments.xls' class='btn btn-default' id='helper_export_pending'>Export to Excel</a> </th></tr><tr id='helper_pending_payments_table_header_2nd_row'><th width='10%'>Due Date</th><th width='10%'>Borrower</th><th>Loan</th><th width='10%'>Payment #</th><th>Amount</th></tr></thead><tbody id='helper_pending_payments_table_body'><tr><td colspan=5>Loading pending receivables...</td></tr><tfoot id='helper_pending_payments_table_foot'></tfoot></tbody></table><table id='helper_defaulted_payments_table' class='table table-striped table-bordered tablesorter'><thead id='helper_defaulted_payments_table_head'><tr><th colspan='5' style=' padding: 8px; font-weight: bold; font-size: 14px; background-color: #778899; color: #000000'> <a class='btn btn-default' id='helper_defaulted_all'>All</a> <a style='float: right;' download='btcjam_defaulted_payments.xls' class='btn btn-default' id='helper_export_defaulted'>Export to Excel</a></th></tr><tr id='helper_defaulted_payments_table_header_2nd_row'><th width='10%'>Loan Date</th><th width='10%'>Borrower</th><th width='60%'>Loan <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></th><th width='10%'>Invested</th><th width='10%'>Remaining</th></tr></thead><tbody id='helper_defaulted_payments_table_body'><tr><td colspan=5>Loading defaulted receivables...</td></tr></tbody><tfoot id='helper_defaulted_payments_table_foot'></tfoot></table>");
+			$("#helper_payments").append("<table id='helper_payables_table' class='table table-striped table-bordered tablesorter'><thead id='helper_payables_table_head'><tr><th colspan='5' style=' padding: 8px; font-weight: bold; font-size: 14px; background-color: #0068c0; color: #ffffff'> <a href='#' class='btn btn-sm' id='helper_payables_7'>Next 7 Days</a> <a href='#' class='btn btn-sm' id='helper_payables_15'>Next 15 Days</a> <a href='#' class='btn btn-sm' id='helper_payables_30'>Next 30 Days</a> <a href='#' class='btn btn-sm' id='helper_payables_60'>Next 60 Days</a> <a href='#' class='btn btn-sm' id='helper_payables_all'>All</a><a style='float: right;' download='btcjam_payables.xls' class='btn btn-sm' id='helper_export_payables'>Export to Excel</a></th></tr><tr id='helper_payables_table_header_2nd_row'><th width='10%'>Due Date</th><th>Loan</th><th>Payment #</th><th width='10%'>Amount</th><th width='10%'>Paid</th></tr></thead></thead><tbody id='helper_payables_table_body'><tr><td colspan=5>Loading payables...</td></tr></tbody></table><table id='helper_overdue_payments_table' class='table table-striped table-bordered tablesorter'><thead id='helper_overdue_payments_table_head'><tr><th colspan='5' style=' padding: 8px; font-weight: bold; font-size: 14px; background-color: #DC143C; color: #ffffff'><a href='#' class='btn btn-sm' id='helper_overdue_7'> < 7 Days</a> <a href='#' class='btn btn-sm' id='helper_overdue_15'> < 15 Days</a> <a href='#' class='btn btn-sm' id='helper_overdue_30'> < 30 Days</a> <a class='btn btn-sm' id='helper_overdue_60'> < 60 Days</a>  <a class='btn btn-sm' id='helper_overdue_all'>All</a>  <a style='float: right;' download='btcjam_overdue_payments.xls' class='btn btn-sm' id='helper_export_overdue'>Export to Excel</a> </th></tr><tr id='helper_overdue_payments_table_header_2nd_row'><th width='10%'>Due Date</th><th width='10%'>Borrower</th><th>Loan</th><th width='10%'>Payment #</th><th>Amount</th></tr></thead><tbody id='helper_overdue_payments_table_body'><tr><td colspan=5>Loading overdue receivables...</td></tr></tbody><tfoot id='helper_overdue_payments_table_foot'></tfoot></table><table id='helper_pending_payments_table' class='table table-striped table-bordered tablesorter'><thead id='helper_pending_payments_table_head'><tr><th colspan='5' style=' padding: 8px; font-weight: bold; font-size: 14px; background-color: #008000; color: #000000'> <a class='btn btn-sm' id='helper_pending_7'>Next 7 Days</a>  <a class='btn btn-sm' id='helper_pending_15'>Next 15 Days</a>  <a class='btn btn-sm' id='helper_pending_30'>Next 30 Days</a> <a class='btn btn-sm' id='helper_pending_60'>Next 60 Days</a> <a class='btn btn-sm' id='helper_pending_all'>All</a> <a style='float: right;' download='btcjam_pending_payments.xls' class='btn btn-sm' id='helper_export_pending'>Export to Excel</a> </th></tr><tr id='helper_pending_payments_table_header_2nd_row'><th width='10%'>Due Date</th><th width='10%'>Borrower</th><th>Loan</th><th width='10%'>Payment #</th><th>Amount</th></tr></thead><tbody id='helper_pending_payments_table_body'><tr><td colspan=5>Loading pending receivables...</td></tr><tfoot id='helper_pending_payments_table_foot'></tfoot></tbody></table><table id='helper_defaulted_payments_table' class='table table-striped table-bordered tablesorter'><thead id='helper_defaulted_payments_table_head'><tr><th colspan='5' style=' padding: 8px; font-weight: bold; font-size: 14px; background-color: #778899; color: #000000'> <a class='btn btn-sm' id='helper_defaulted_all'>All</a> <a style='float: right;' download='btcjam_defaulted_payments.xls' class='btn btn-sm' id='helper_export_defaulted'>Export to Excel</a></th></tr><tr id='helper_defaulted_payments_table_header_2nd_row'><th width='10%'>Loan Date</th><th width='10%'>Borrower</th><th width='60%'>Loan <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></th><th width='10%'>Invested</th><th width='10%'>Remaining</th></tr></thead><tbody id='helper_defaulted_payments_table_body'><tr><td colspan=5>Loading defaulted receivables...</td></tr></tbody><tfoot id='helper_defaulted_payments_table_foot'></tfoot></table>");
 
 			$("#helper_payables_table").css('display','none');
 			$("#helper_overdue_payments_table").css('display','table');
@@ -617,6 +613,7 @@ function enhancePaymentsScreen(){
 		var enhancepayments = function(){
 			if($("#btchelper_btcprice").text().trim().length > 0){
 
+				$("#body > div.row.gutter-10 > div.col-md-3").css("left","10px");
 				$('.dt-payment').each(function(i, obj) {
 					
 					payablehtml = "&nbsp;&nbsp;&nbsp;<span id='btchelper_payables_"+i+"'>$</span>";
@@ -653,6 +650,7 @@ function enhanceRateUserScreen(){
 			$('#helper_menu_add_rateusers').addClass('active');
 			loadLoans();
 			chrome.storage.local.get({stored_investment_data: 'empty'}, function(data){
+				data.stored_investment_data.sort(dynamicSort("title"));
 				var borrowerswithpositiveratings = [];
 				var positiveratingandoverdue = [];
 				var borrowerswithpositiveratings_html = "";
@@ -676,6 +674,8 @@ function enhanceRateUserScreen(){
 						if(borrowerid.length > 0){
 							var borrower_loan_count = 0;
 							var imageappended = false;
+							var invested = 0.00000000;
+							var received = 0.00000000;
 							$.each(data.stored_investment_data, function(count, investment){
 								if(positiveratingandoverdue.indexOf(investment.user_name) < 0){
 									if( (investment.payment_state.toLowerCase().indexOf("late") >= 0) || (investment.payment_state.toLowerCase().indexOf("defaulted") >= 0) ){
@@ -697,15 +697,17 @@ function enhanceRateUserScreen(){
 									if(!imageappended){
 										imgstring = "<img class='media-object avatar-notes' src=\""+investment.user_avatar+"\">";
 										username = investment.user_name;
-										var rating_html = "<a href='#' id='helper_rateuserbutton_"+borrowerid+"' data-username='"+username+"' data-borrowerid='"+borrowerid+"' class='btn btn-primary ratingbutton' data-controls-modal='modal-window' data-toggle='modal' data-target='#helper_ratingModal' role='button'>Rate "+username+"</a>";
+										var rating_html = "<a href='#' id='helper_rateuserbutton_"+borrowerid+"' data-username='"+username+"' data-borrowerid='"+borrowerid+"' style='width: 100%;' class='ratingbutton btn btn-primary' data-controls-modal='modal-window' data-toggle='modal' data-target='#helper_ratingModal' role='button'>Rate "+username+"</a>";
 										$("#borrowers_table").append("<tr><td><a href='https://btcjam.com/users/"+borrowerid+"' target='_blank'>"+imgstring+""+username+"</a></td><td><div id='"+borrowerid+"_investedamounts'></td><td><div id='"+borrowerid+"_receivedamounts'></td><td><div id='"+borrowerid+"_paymentsmade'></td><td nowrap><div id='"+borrowerid+"_repaymentstatus'></div></td><td><div id='"+borrowerid+"_loans'></div></td><td>"+rating_html+"</td></tr>")	
 										imageappended = true;								
 									}
 									$("#"+borrowerid+"_investedamounts").append("฿" + parseFloat(investment.amount).toFixed(8) + "<br />");
+									invested = parseFloat(invested) + parseFloat(investment.amount);
 									$("#"+borrowerid+"_receivedamounts").append("฿" + parseFloat(investment.amount_received).toFixed(8) + "<br />");
+									received = received + parseFloat(investment.amount_received);
 									$("#"+borrowerid+"_paymentsmade").append(investment.payments_made + " / " + investment.number_of_payments + "<br />");
-									$("#"+borrowerid+"_loans").append("<a href='https://btcjam.com/listings/"+investment.id+"' target='_blank'>"+investment.title+"</a><br>");
-
+									$("#"+borrowerid+"_loans").append("<a href='https://btcjam.com/listings/"+investment.id+"' target='_blank'>"+truncate(investment.title, 80)+"</a><br>");
+									
 									var loanstatus = investment.payment_state;
 									var statuscolor = "#008000";
 									if(loanstatus.toLowerCase().indexOf("repaid") >= 0){
@@ -716,7 +718,11 @@ function enhanceRateUserScreen(){
 									}
 									$("#"+borrowerid+"_repaymentstatus").append(" <span style='text-transform: capitalize; font-weight: bold; color: "+statuscolor+"'>"+loanstatus+"</span><br>");
 								}
-							});					
+							});	
+
+							$("#"+borrowerid+"_investedamounts").append("<span class='helper_rating_total_invested'>฿" + parseFloat(invested).toFixed(8) + "</span>");
+							$("#"+borrowerid+"_receivedamounts").append("<span class='helper_rating_total_received'>฿" + parseFloat(received).toFixed(8) + "</span>");
+
 							if(borrower_loan_count == 0){
 								lenders.push(this);
 							}
@@ -782,9 +788,9 @@ function enhanceRateUserScreen(){
 								//imgstring = $(data).find(".user-img-profile").attr("src")+"'> "+$(data).find(".user-img-profile").attr("alt").substring($(data).find(".user-img-profile").attr("alt").indexOf(" - ") + 3);
 								$("#helper_investor_image_"+investorid).append("<img class=\"media-object avatar-notes\" width=\"48\" src=\""+imgstring+"\" alt=\"28005 stringio.thumb\">");
 							});					
-							var rating_html = "<a href='#' id='helper_rateuserbutton_"+investorid+"' data-username='"+this.text+"' data-borrowerid='"+investorid+"' class='btn btn-primary ratingbutton' data-controls-modal='modal-window' data-toggle='modal' data-target='#helper_ratingModal' role='button'>Rate "+this.text+"</a>";
+							var rating_html = "<a href='#' id='helper_rateuserbutton_"+investorid+"' data-username='"+this.text+"' data-borrowerid='"+investorid+"' style='width: 100%;' class='ratingbutton btn btn-primary' data-controls-modal='modal-window' data-toggle='modal' data-target='#helper_ratingModal' role='button'>Rate "+this.text+"</a>";
 
-							$("#investors_table").append("<tr><td><a href='https://btcjam.com/users/"+investorid+"' target='_blank'><div id='helper_investor_image_"+investorid+"'></div> "+this.text+"</a></td><td><div id='helper_investor_amounts_"+investorid+"'></div></td><td><div id='helper_investor_loans_"+investorid+"'></td><td>"+rating_html+"</td><td></td></tr>");	
+							$("#investors_table").append("<tr><td><a href='https://btcjam.com/users/"+investorid+"' target='_blank'><div id='helper_investor_image_"+investorid+"'></div> "+this.text+"</a></td><td><div id='helper_investor_amounts_"+investorid+"'></div></td><td><div id='helper_investor_loans_"+investorid+"'></td><td>"+rating_html+"</td></tr>");	
 						});
 
 						var populateLoanData = function(){
@@ -934,8 +940,8 @@ function enhanceListingScreen(){
 
 		//risk factors
 		var loadriskfactors = function(){
-			var borrowername = $(".user-img-listing").parent().next('p').children('a').text();
-			$.get($(".user-img-listing").parent().next('p').children('a').attr('href'), function(data){
+			var borrowername = $(".user-img-listing").parent().children('p').children('a').text();
+			$.get($(".user-img-listing").parent().children('p').children('a').attr('href'), function(data){
 				$(data).find("#my_loans-table > tbody > tr").each(function (count, row){
 					var loanstatus = $(row).find('td:nth-child(7)').text().trim();
 					switch(loanstatus){
@@ -1109,7 +1115,6 @@ function loadNotes(){
 
 function enhanceNotesScreen(){
 	if($(location).attr('href').indexOf('/notes') > 0){
-		console.log("notes");
 
 		var injection = '(' + function(){
 			var fixYieldForFundingNotes = function(){
@@ -1267,7 +1272,7 @@ function loadLoans(){
 				loan.name = loanname;
 				$.when($.ajax({url: loanurl}).done(function(data){
 					var investmentcount = 0;
-					$(data).find('#listing_investments-table').find('tr').each(function(count, row){
+					$(data).find('#listing-investments-table').find('tr').each(function(count, row){
 						investmentcount++;
 						var investorlink = $(row).find('a').attr('href');
 						if(typeof investorlink != 'undefined'){
@@ -1323,8 +1328,8 @@ function enhanceFollowersScreen(){
 
 			$('#helper_menu_add_followers').addClass('active');
 			
-			totalfollowers = parseInt($("div.profile-numbers > div:nth-child(1) > div > div:nth-child(2) > p").text().trim());
-			totalfollowing = parseInt($("div.profile-numbers > div:nth-child(2) > div > div:nth-child(2) > p").text().trim());
+			totalfollowers = parseInt($("#body > div:nth-child(4) > div > div > div.col-md-3 > div > div > div > div:nth-child(3) > div > div > a > h3").text().trim());
+			totalfollowing = parseInt($("#body > div:nth-child(4) > div > div > div.col-md-3 > div > div > div > div:nth-child(4) > div > div > a > h3").text().trim());
 
 			$('#body > div:nth-child(4) > div > div > div.col-md-3').css("display","none");
 			$('#body > div:nth-child(4) > div > div > div:nth-child(2)').css("display","none");
@@ -1518,7 +1523,6 @@ function enhanceFollowersScreen(){
 					 	});
 					}
 					else{
-						console.log("should be loading following");
 						if($('#helper_following').find('#helper_following_beachball').length == 0){
 							$("#helper_following").append("<div id='helper_following_beachball'>Loading Following...</div>");
 						}
@@ -1566,7 +1570,6 @@ function enhanceFollowersScreen(){
 				$('.helper_block_unblock_link').click(function(event){
 					// event.preventDefault();				
 					// event.stopPropagation();
-					console.log('block-unblock link clicked');
 					chrome.storage.local.set({
 						following: ''
 					});
@@ -1600,8 +1603,9 @@ function loadFollowers(){
 	followers_following_combined = [];
 
 	$.get("https://btcjam.com/followers", function(data){
-		totalusers = $(data).find("div.profile-numbers > div:nth-child(2) > div > div:nth-child(2) > p").text().trim();
+		totalusers = $(data).find("#body > div:nth-child(4) > div > div > div.col-md-3 > div > div > div > div:nth-child(4) > div > div > a > h3").text().trim();
 		pages = Math.ceil(totalusers / 10);		
+
 
 		for(i=1; i<=pages; i++){
 			$.get("https://btcjam.com/followers?following=" + i, function(data){
@@ -1623,7 +1627,7 @@ function loadFollowers(){
 			});		
 		}
 
-		totalusers = $(data).find("div.profile-numbers > div:nth-child(1) > div > div:nth-child(2) > p").text().trim();
+		totalusers = $(data).find("#body > div:nth-child(4) > div > div > div.col-md-3 > div > div > div > div:nth-child(3) > div > div > a > h3").text().trim();
 		pages = Math.ceil(totalusers / 10);		
 		for(i=1; i<=pages; i++){
 			$.get("https://btcjam.com/followers?follower=" + i, function(data){
@@ -1711,7 +1715,6 @@ function enhanceInvestmentsScreen(){
 }
 
 
-
 function begForMoney(){
 	chrome.storage.local.get({stopaskingformoney: false}, function (obj) {
 		if(obj.stopaskingformoney == false){
@@ -1769,4 +1772,8 @@ function ascending( a, b ) {
 
 function getRandomInt(min, max){
 	return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function truncate(inputstring, maxlength){
+	return outputstring = inputstring.length >= maxlength ? inputstring.substring(0, maxlength - 3) + "..." : inputstring;
 }
