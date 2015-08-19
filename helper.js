@@ -484,15 +484,6 @@ function enhancePaymentsScreen(){
 	   				break;
 	   		}
 
-
-	   // 			chrome.storage.local.get({stored_investment_data: 'empty'}, function(data) {
-				// 	$(data.stored_investment_data).each(function(count, investment){
-				// 		if(investment.payment_state.toLowerCase().indexOf('in progress') > 0){
-				// 			console.log(investment);
-				// 		}
-				// 	});				
-				// });
-
 	   		if(update_default){
 				chrome.storage.local.get({stored_investment_data: 'empty'}, function(data) {
 					var default_totalinvested = 0.00000000;
@@ -648,7 +639,13 @@ function enhanceRateUserScreen(){
 		if($(location).attr('href').indexOf('/reputations/new') > 0){
 			$('#body > div:nth-child(2) > div > ul > li').removeClass('active');
 			$('#helper_menu_add_rateusers').addClass('active');
-			loadLoans();
+
+			var storedloandata = null;
+			chrome.storage.local.get({stored_loan_data: 'empty'}, function(data){
+				storedloandata = data.stored_loan_data;
+			});
+
+
 			chrome.storage.local.get({stored_investment_data: 'empty'}, function(data){
 				data.stored_investment_data.sort(dynamicSort("title"));
 				var borrowerswithpositiveratings = [];
@@ -720,9 +717,10 @@ function enhanceRateUserScreen(){
 								}
 							});	
 
-							$("#"+borrowerid+"_investedamounts").append("<span class='helper_rating_total_invested'>฿" + parseFloat(invested).toFixed(8) + "</span>");
-							$("#"+borrowerid+"_receivedamounts").append("<span class='helper_rating_total_received'>฿" + parseFloat(received).toFixed(8) + "</span>");
-
+							if(borrower_loan_count > 1){
+								$("#"+borrowerid+"_investedamounts").append("<span class='helper_rating_total_invested'>฿" + parseFloat(invested).toFixed(8) + "</span>");
+								$("#"+borrowerid+"_receivedamounts").append("<span class='helper_rating_total_received'>฿" + parseFloat(received).toFixed(8) + "</span>");
+							}
 							if(borrower_loan_count == 0){
 								lenders.push(this);
 							}
@@ -780,14 +778,14 @@ function enhanceRateUserScreen(){
 						$(lenders).each(function() {
 							var investorid = this.value;
 							var imgstring = "img goes here";
-							$.ajax({url: "https://btcjam.com/users/" + investorid}).done(function(data){
-								var imgstring = $(data).find(".img-rounded.user-img-profile").attr("src");
-								if(imgstring.indexOf("/assets/unknow")>=0){
-									imgstring = "https://btcjam.com" + imgstring;
-								}
-								//imgstring = $(data).find(".user-img-profile").attr("src")+"'> "+$(data).find(".user-img-profile").attr("alt").substring($(data).find(".user-img-profile").attr("alt").indexOf(" - ") + 3);
-								$("#helper_investor_image_"+investorid).append("<img class=\"media-object avatar-notes\" width=\"48\" src=\""+imgstring+"\" alt=\"28005 stringio.thumb\">");
-							});					
+							// $.ajax({url: "https://btcjam.com/users/" + investorid}).done(function(data){
+							// 	var imgstring = $(data).find(".img-rounded.user-img-profile").attr("src");
+							// 	if(imgstring.indexOf("/assets/unknow")>=0){
+							// 		imgstring = "https://btcjam.com" + imgstring;
+							// 	}
+							// 	//imgstring = $(data).find(".user-img-profile").attr("src")+"'> "+$(data).find(".user-img-profile").attr("alt").substring($(data).find(".user-img-profile").attr("alt").indexOf(" - ") + 3);
+							// 	$("#helper_investor_image_"+investorid).append("<img class=\"media-object avatar-notes\" width=\"48\" src=\""+imgstring+"\" alt=\"28005 stringio.thumb\">");
+							// });					
 							var rating_html = "<a href='#' id='helper_rateuserbutton_"+investorid+"' data-username='"+this.text+"' data-borrowerid='"+investorid+"' style='width: 100%;' class='ratingbutton btn btn-primary' data-controls-modal='modal-window' data-toggle='modal' data-target='#helper_ratingModal' role='button'>Rate "+this.text+"</a>";
 
 							$("#investors_table").append("<tr><td><a href='https://btcjam.com/users/"+investorid+"' target='_blank'><div id='helper_investor_image_"+investorid+"'></div> "+this.text+"</a></td><td><div id='helper_investor_amounts_"+investorid+"'></div></td><td><div id='helper_investor_loans_"+investorid+"'></td><td>"+rating_html+"</td></tr>");	
@@ -795,21 +793,33 @@ function enhanceRateUserScreen(){
 
 						var populateLoanData = function(){
 							// console.log("populating loan data");
-							chrome.storage.local.get({stored_loan_data: 'empty'}, function(data) {
+							// chrome.storage.local.get({stored_loan_data: 'empty'}, function(data) {
 								$(lenders).each(function(){
 									var lenderid = this.value;
-									$.each(data.stored_loan_data, function(count, loan){
+									var foundavatar = false;
+									var totalinvested = 0.00000000;
+									var numberofinvestments = 0;
+									$.each(storedloandata, function(count, loan){
 										$.each(loan.investments, function(i, investment){
 											if(lenderid == investment.investorid){
-												$('#helper_investor_amounts_'+lenderid).append(investment.amount + "<br>");
+												numberofinvestments++;
+												totalinvested = parseFloat(totalinvested) + parseFloat(investment.amount);
+												$('#helper_investor_amounts_'+lenderid).append("฿"+parseFloat(investment.amount).toFixed(8) + "<br>");
 												$('#helper_investor_loans_'+lenderid).append("<a href='"+loan.url+"'>"+loan.name+"</a><br>");
+												if(!foundavatar){
+													foundavatar = true;
+													$("#helper_investor_image_"+lenderid).append("<img class=\"media-object avatar-notes\" width=\"48\" src=\""+investment.investoravatar+"\" alt=\"28005 stringio.thumb\">");
+												}
 											}
 										});
-									});							
+									});		
+									if(numberofinvestments > 1){
+										$('#helper_investor_amounts_'+lenderid).append("<span class='helper_rating_total_invested'>฿"+parseFloat(totalinvested).toFixed(8) + "</span>");					
+									}
 								});
-							});						
+							// });						
 						}
-						setTimeout(populateLoanData, 3500);
+						setTimeout(populateLoanData, 1000);
 
 						$("#helper_rateinvestors").append("</tbody></table>");
 					}
@@ -828,6 +838,8 @@ function enhanceRateUserScreen(){
 				});
 
 			});
+			loadLoans();
+
 		}
 	}
 	var fixrateuserscreen = function(){
@@ -1270,45 +1282,35 @@ function loadLoans(){
 				loan.investments = [];
 				loan.url = loanurl;
 				loan.name = loanname;
-				$.when($.ajax({url: loanurl}).done(function(data){
-					var investmentcount = 0;
-					$(data).find('#listing-investments-table').find('tr').each(function(count, row){
-						investmentcount++;
-						var investorlink = $(row).find('a').attr('href');
-						if(typeof investorlink != 'undefined'){
-							var investorid = investorlink.substring(investorlink.indexOf('/users/') + 7);
-							var amountinvested = $(row).find('span').text().trim();
-							var investment = {};
-							investment.investorid = investorid;
-							investment.amount = amountinvested;
-							loan.investments.push(investment);
-						}
+
+				$.when($.getJSON(loan.url + '/listing_investments?dir=desc&for_listing=true&records=1000&sorting=created_at' , function(listing_investments) {
+					$.each(listing_investments, function(count, listing_investment){
+						var investment = {};
+						investment.investorid = listing_investment.user.id;
+						investment.investorname = listing_investment.user.alias;
+						investment.investoravatar = listing_investment.user.avatar_thumb_url;
+						investment.amount = listing_investment.amount;
+						loan.investments.push(investment);							
+						// console.log(loan.name + ": " + loan.investments.length + " investments");
 					});
-				})).then(function(){
-					loadedloaninvestments = true;
+				})).done(function(){
+					// console.log(loan.investments);
+					myloans.push(loan);
+			 		chrome.storage.local.set({
+						stored_loan_data: myloans
+					});								
 				});
-				myloans.push(loan);
+
+
 			}
-		})).then(function(){
+		})).done(function(){
+			loadedloaninvestments = true;
 			loadedloans = true;
 		});
  	}).then(function(){
  		loadedloanlist = true;
  	}));
 
-	var doneloadingloans = function(){
-		if(loadedloanlist && loadedloans && loadedloaninvestments){
-			// console.log("done loading loans!");
-	 		chrome.storage.local.set({
-				stored_loan_data: myloans
-			});			
-		}
-		else{
-			// console.log("not done loading loans");
-			setTimeout(doneloadingloans, 500);
-		}
-	}
-	doneloadingloans();
 }
 
 

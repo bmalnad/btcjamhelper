@@ -1,6 +1,6 @@
 chrome.runtime.onInstalled.addListener(function(details){
     if(details.reason == "install"){
-        console.log("This is a first install!");
+        console.log("Thank you for using BTCjamHelper!");
         var thisVersion = chrome.runtime.getManifest().version;
         chrome.storage.local.set({
         exchange: 'coindesk',
