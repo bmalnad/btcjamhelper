@@ -421,17 +421,14 @@ function enhancePaymentsScreen(){
 			var searchtimeout = null;
 			$("#helper_payment_searchbox").keyup(function(){
 				if(searchtimeout !== null){
-					console.log("clearing timeout");
 					clearTimeout(searchtimeout);
 				}
-				console.log("setting timeout");
-				searchtimeout = setTimeout(doSearch, 1000);
+				searchtimeout = setTimeout(doSearch, 750);
 			});
 
 			var doSearch = function(){
 				var searchtext = $("#helper_payment_searchbox").val().toLowerCase();
 				if(searchtext.length >= 3){					
-					console.log("searchtext.length = " + searchtext.length);
 					$.getJSON("https://btcjam.com/my_account/payments.json?sEcho=5&iColumns=6&iDisplayStart=0&iDisplayLength=100&sSearch=" + searchtext , function( data ) {
 						$("#helper_search_payments_table_body > tr").remove();
 						function payment_date_ascending(a,b) {
