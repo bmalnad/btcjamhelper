@@ -1,7 +1,7 @@
 {
   "name": "BTCjam Helper",
   "description": "Significantly enhances the BTCjam user interface.",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "permissions": [
     "notifications",
     "alarms",
