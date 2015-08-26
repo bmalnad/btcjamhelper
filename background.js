@@ -13,7 +13,6 @@ chrome.runtime.onInstalled.addListener(function(details){
         	console.log("BTCjam Helper default preferences set.");
             notifyUserSimple({title: "BTCjamHelper Extension", icon: "icon_128.png", body: "Version "+ thisVersion +" installed successfully."});
         });
-
     }else if(details.reason == "update"){
         var thisVersion = chrome.runtime.getManifest().version;
         chrome.storage.local.set({
